@@ -1,0 +1,81 @@
+const Benchmark = require('benchmark');
+const { default: parseEJSON } = require('./dist/ejson-shell-parser.cjs.prod');
+const { parseFilter } = require('mongodb-query-parser');
+
+const sample = `({
+  "_id3": {
+    "__alias_0": "$year",
+    "_id": {
+      "__alias_0": "$year",
+      "_id": {
+        "__alias_0": "$year",
+        "_id": {
+          "__alias_0": "$year",
+          "_id": {
+            "__alias_0": "$year",
+            "_id": {
+              "__alias_0": "$year"
+            },
+          },
+        },
+      },
+    },
+  },
+  "_id2": {
+    "__alias_0": "$year",
+    "_id": {
+      "__alias_0": "$year"
+    },
+    "_id": {
+      "__alias_0": "$year"
+    },
+    "_id": {
+      "__alias_0": "$year"
+    },
+    "_id": {
+      "__alias_0": "$year",
+    },
+  },
+  "_id3": {
+    "__alias_0": "$year",
+    "_id": {
+      "__alias_0": "$year",
+      "_id": {
+        "__alias_0": "$year",
+        "_id": {
+          "__alias_0": "$year",
+          "_id": {
+            "__alias_0": "$year",
+            "_id": {
+              "__alias_0": "$year"
+            },
+          },
+        },
+      },
+    },
+  }
+})`;
+
+var suite = new Benchmark.Suite;
+
+// add tests
+suite.add('parseEJSON#eval', function() {
+  parseEJSON(sample)
+})
+.add('parseEJSON#walk', function() {
+  parseEJSON(sample, { evalUsingTree: true })
+})
+.add('mongodb-query-parser#insecure', function() {
+  parseFilter(sample);
+})
+.add('eval', function() {
+  eval(sample);
+})
+// add listeners
+.on('cycle', function(event) {
+  console.log(String(event.target));
+})
+.on('complete', function() {
+  console.log('Fastest is ' + this.filter('fastest').map('name'));
+})
+.run({ 'async': true });

@@ -1,10 +1,10 @@
 {
-  "name": "relaxed-ejson-parser",
+  "name": "ejson-shell-parser",
   "version": "1.0.0",
-  "main": "dist/relaxed-ejson-parser.cjs.js",
-  "module": "dist/relaxed-ejson-parser.esm.js",
-  "umd:main": "dist/relaxed-ejson-parser.umd.min.js",
-  "types": "dist/relaxed-ejson-parser.d.ts",
+  "main": "dist/ejson-shell-parser.cjs.js",
+  "module": "dist/ejson-shell-parser.esm.js",
+  "umd:main": "dist/ejson-shell-parser.umd.min.js",
+  "types": "dist/ejson-shell-parser.d.ts",
   "author": "Scott Sidwell <scott.sidwell@mongodb.com>",
   "license": "MIT",
   "files": [
@@ -35,6 +35,9 @@
     "typescript": "^3.7.4"
   },
   "preconstruct": {
-    "umdName": "relaxedEJSONParser"
+    "umdName": "EJSONShellParser",
+    "globals": {
+      "bson": "BSON"
+    }
   }
 }

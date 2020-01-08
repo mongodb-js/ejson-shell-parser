@@ -74,7 +74,7 @@ const checkTree = (node: Node) => {
   return false;
 }
 
-export default function parse(input: string, options: { evalUsingTree: boolean} = { evalUsingTree: true}) {
+export default function parse(input: string, options: { evalUsingTree: boolean } = { evalUsingTree: true, }) {
   const wrapped = `(${input})`;
   const ast = buildAST(wrapped);
   if (checkTree(ast)) {
