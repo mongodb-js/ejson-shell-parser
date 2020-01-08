@@ -1,0 +1,4 @@
+node_modules
+/.rts*
+/dist
+yarn-error.log
