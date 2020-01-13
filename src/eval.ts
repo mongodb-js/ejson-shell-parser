@@ -1,5 +1,5 @@
-import { Expression, UnaryExpression, BinaryExpression, Identifier, Node } from "estree";
-import { getScopeFunction } from "./scope";
+import { Expression, UnaryExpression, BinaryExpression, Identifier, Node, ObjectExpression, MemberExpression } from "estree";
+import { getScopeFunction, getMemberObject } from "./scope";
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
@@ -48,9 +48,18 @@ const walk = (node: Expression): any => {
     case 'ArrayExpression': return node.elements.map(node => walk(node as Expression))
     case "CallExpression":
     case "NewExpression":
-      const callee = getScopeFunction((node.callee as Identifier).name);
-      const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
-      return node.type === 'NewExpression' ? new (callee as any)(...args) : callee.apply(callee, args)
+      if (node.callee.type === "Identifier") {
+        const callee = getScopeFunction((node.callee).name) as Function;
+        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+        return node.type === 'NewExpression' ? new (callee as any)(...args) : callee.apply(callee, args)
+      }
+      else if (node.callee.type === "MemberExpression" && node.callee.object.type === "Identifier" && node.callee.property.type === "Identifier") {
+        const object = getMemberObject((node.callee.object.name));
+        const property = node.callee.property.name;
+        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+        return (object[property]).apply(object[property], args);
+      }
+      throw new Error('Should not evaluate invalid expressions');
     case "ObjectExpression":
       const obj: { [key: string]: any } = {};
       node.properties.forEach(property => {

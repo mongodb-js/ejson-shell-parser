@@ -1,5 +1,11 @@
 import bson from 'bson';
 
+type AllowedFieldsWithType<Obj, Type> = {
+    [K in keyof Obj]: Obj[K] extends Type ? K : never
+};
+
+type ExtractFieldsOfType<Obj, Type> = AllowedFieldsWithType<Obj, Type>[keyof Obj]
+
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,
   Binary: bson.Binary,
@@ -43,15 +49,28 @@ const SCOPE: { [x: string]: Function } = {
   }
 };
 
-export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
-
-export function evalWithScope (input: string) {
-  return Function(...Object.keys(SCOPE), `return (${input})`)(...Object.values(SCOPE))
+const MEMBER_EXPRESSIONS: { [x: string]: { [x: string]: Function}} = {
+  Math: (Object.getOwnPropertyNames(Math) as ExtractFieldsOfType<Math, Function>[]).reduce((acc, fn) => {
+    if (typeof Math[fn] === "function") {
+      acc[fn] = Math[fn];
+    }
+    return acc;
+  }, {} as {[x: string]: Function})
 }
+
+export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
+export const ALLOWED_MEMBER_OBJECTS = Object.freeze(Object.keys(MEMBER_EXPRESSIONS));
 
 export function getScopeFunction(key: string): Function {
   if (SCOPE[key]) {
     return SCOPE[key];
   }
   throw new Error(`Attempted to access scope property '${key}' that doesn't exist`);
+}
+
+export function getMemberObject(key: string): { [x: string]: Function } {
+  if (MEMBER_EXPRESSIONS[key]) {
+    return MEMBER_EXPRESSIONS[key];
+  }
+  throw new Error(`Attempted to access member '${key}' that doesn't exist`);
 }

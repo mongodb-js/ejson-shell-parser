@@ -6,12 +6,14 @@ import {
   SpreadElement,
   Pattern
 } from "estree";
-import { GLOBAL_FUNCTIONS, evalWithScope} from './scope';
+import { GLOBAL_FUNCTIONS, ALLOWED_MEMBER_OBJECTS } from './scope';
 import { executeAST } from './eval';
 
 function buildAST(input: string): Node {
   return parseAST(input, { ecmaVersion: 5 }) as Node;
 }
+
+interface Options { weakParsing: boolean };
 
 /**
  * Only allow CallExpressions where the Identifier matches a whitelist of safe
@@ -23,6 +25,12 @@ const checkSafeCall = (node: BaseCallExpression) => {
       GLOBAL_FUNCTIONS.indexOf(node.callee.name) >= 0 &&
       node.arguments.every(checkSafeExpression)
     );
+  } else if (node.callee.type === "MemberExpression") {
+    const expression = node.callee;
+    // If we're only referring to identifiers, we don't need to check deeply.
+    if (expression.object.type === "Identifier" && expression.property.type === "Identifier") {
+      return ALLOWED_MEMBER_OBJECTS.indexOf(expression.object.name) >= 0 && node.arguments.every(checkSafeExpression);
+    }
   }
   return false;
 };
@@ -65,7 +73,7 @@ const checkSafeExpression = (
   }
 };
 
-const checkTree = (node: Node) => {
+const checkTree = (node: Node, options: Options) => {
   if (node.type === 'Program') {
     if (node.body.length === 1 && node.body[0].type === 'ExpressionStatement') {
       return checkSafeExpression(node.body[0].expression);
@@ -74,11 +82,11 @@ const checkTree = (node: Node) => {
   return false;
 }
 
-export default function parse(input: string, options: { evalUsingTree: boolean } = { evalUsingTree: true, }) {
+export default function parse(input: string, options: Options = { weakParsing: false }) {
   const wrapped = `(${input})`;
   const ast = buildAST(wrapped);
-  if (checkTree(ast)) {
-    return options.evalUsingTree ? executeAST(ast) : evalWithScope(wrapped);
+  if (checkTree(ast, options)) {
+    return executeAST(ast);
   }
   return '';
 }

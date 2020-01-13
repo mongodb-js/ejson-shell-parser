@@ -130,6 +130,14 @@ it("should support parsing array operators", function() {
   ]);
 });
 
+it("should allow parsing while using functions from Math", function() {
+  expect(parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }')).toEqual({ floor: 5, ceil: 6 })
+});
+
+it("Should be able to handle math expressions", function() {
+  expect(parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')).toEqual({ simpleCalc: 31 })
+});
+
 it("should not allow calling functions that do not exist", function() {
   expect(parse('{ date: require("") }')).toEqual("");
 });
