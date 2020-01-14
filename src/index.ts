@@ -38,10 +38,11 @@ const checkSafeCall = (node: BaseCallExpression) => {
       );
     } else if (expression.object.type === 'NewExpression') {
       // TODO: Check if this prop actually exists on the object
+      const object = expression.object.callee as Identifier;
+      expression.object;
       return (
-        ALLOWED_MEMBER_OBJECTS.indexOf(
-          (expression.object.callee as Identifier).name
-        ) >= 0 && node.arguments.every(checkSafeExpression)
+        ALLOWED_MEMBER_OBJECTS.indexOf(object.name) >= 0 &&
+        node.arguments.every(checkSafeExpression)
       );
     } else {
       return (

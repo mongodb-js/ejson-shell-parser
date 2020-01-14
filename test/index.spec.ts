@@ -155,6 +155,19 @@ describe('member expressions', function() {
         year: 1970,
       });
     });
+
+    it('should allow chaining member expressions', function() {
+      expect(
+        parse(
+          `{
+            dayOfYear: Math.round((new Date(1578974885017).setHours(23)
+            - new Date(new Date(1578974885017).getYear(), 0, 1, 0, 0, 0))/1000/60/60/24)
+          }`
+        )
+      ).toEqual({
+        dayOfYear: 18276,
+      });
+    });
   });
 });
 it('should not allow calling IIFE', function() {

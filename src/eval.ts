@@ -77,12 +77,12 @@ const binaryExpression = (node: BinaryExpression): any => {
   }
 };
 
-const memberExpression = (node: CallExpression | NewExpression): any => {
+const memberExpression = (node: CallExpression): any => {
   switch (node.callee.type) {
     case 'Identifier':
       // Handing <Constructor>() and new <Constructor>() cases
       const callee = getScopeFunction(node.callee.name) as Function;
-      const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+      const args = node.arguments.map(arg => walk(arg));
       return node.type === 'NewExpression'
         ? new (callee as any)(...args)
         : callee.apply(callee, args);
@@ -91,16 +91,12 @@ const memberExpression = (node: CallExpression | NewExpression): any => {
       if (node.callee.object.type === 'Identifier') {
         const property = (node.callee.property as Identifier).name;
         const fn = getMemberProperty(node.callee.object.name, property);
-        const args = node.arguments.map(arg =>
-          walk(arg as Expression)
-        ) as any[];
+        const args = node.arguments.map(arg => walk(arg));
         return fn.apply(fn, args);
       } else if (node.callee.property.type === 'Identifier') {
-        const obj = walk(node.callee.object as Expression);
+        const obj = walk(node.callee.object);
         const property = node.callee.property.name;
-        const args = node.arguments.map(arg =>
-          walk(arg as Expression)
-        ) as any[];
+        const args = node.arguments.map(arg => walk(arg));
         return obj[property].apply(obj, args);
       }
     default:
@@ -108,7 +104,7 @@ const memberExpression = (node: CallExpression | NewExpression): any => {
   }
 };
 
-const walk = (node: Expression): any => {
+const walk = (node: Node): any => {
   switch (node.type) {
     case 'Literal':
       return node.value;
@@ -117,7 +113,7 @@ const walk = (node: Expression): any => {
     case 'BinaryExpression':
       return binaryExpression(node);
     case 'ArrayExpression':
-      return node.elements.map(node => walk(node as Expression));
+      return node.elements.map(node => walk(node));
     case 'CallExpression':
     case 'NewExpression':
       return memberExpression(node);
@@ -128,7 +124,7 @@ const walk = (node: Expression): any => {
           property.key.type === 'Identifier'
             ? property.key.name
             : walk(property.key);
-        obj[key] = walk(property.value as Expression);
+        obj[key] = walk(property.value);
       });
       return obj;
     default:
