@@ -130,22 +130,29 @@ it("should support parsing array operators", function() {
   ]);
 });
 
-it("should allow parsing while using functions from Math", function() {
+
+
+it("should not allow calling functions that do not exist", function() {
+  expect(parse('{ date: require("") }')).toEqual("");
+});
+
+describe("member expressions", function() {
+  describe("Math", function() {
+    it("should allow parsing while using functions from Math", function() {
   expect(parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }')).toEqual({ floor: 5, ceil: 6 })
 });
 
 it("Should be able to handle math expressions", function() {
   expect(parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')).toEqual({ simpleCalc: 31 })
 });
+  });
 
-it("should not allow calling functions that do not exist", function() {
-  expect(parse('{ date: require("") }')).toEqual("");
+  describe("Date", function() {
+    it("should allow member expressions", function() {
+  expect(parse("{ year: (new Date(0)).getFullYear() }")).toEqual({ year: 1970 });
 });
-
-it("should not allow member expressions", function() {
-  expect(parse("{ date: Date.now() }")).toEqual("");
+  });
 });
-
 it("should not allow calling IIFE", function() {
   expect(parse('{ date: (function() { return "10"; })() }')).toEqual("");
 });

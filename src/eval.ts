@@ -1,5 +1,5 @@
-import { Expression, UnaryExpression, BinaryExpression, Identifier, Node, ObjectExpression, MemberExpression } from "estree";
-import { getScopeFunction, getMemberObject } from "./scope";
+import { Expression, UnaryExpression, BinaryExpression, Identifier, Node, ObjectExpression, MemberExpression, CallExpression, NewExpression } from "estree";
+import { getScopeFunction, getMemberProperty } from "./scope";
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
@@ -40,6 +40,31 @@ const binaryExpression = (node: BinaryExpression): any => {
   }
 }
 
+const memberExpression = (node: CallExpression | NewExpression): any => {
+  switch (node.callee.type) {
+    case 'Identifier':
+      // Handing <Constructor>() and new <Constructor>() cases
+      const callee = getScopeFunction((node.callee).name) as Function;
+        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+        return node.type === 'NewExpression' ? new (callee as any)(...args) : callee.apply(callee, args)
+      case 'MemberExpression':
+        // If they're using a static method on a member
+        if (node.callee.object.type === "Identifier") {
+        const property = (node.callee.property as Identifier).name;
+        const fn = getMemberProperty((node.callee.object.name), property);
+        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+        return fn.apply(fn, args);
+      } else if (node.callee.property.type === "Identifier") {
+        const obj = walk(node.callee.object as Expression);
+        const property = node.callee.property.name;
+        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
+        return obj[property].apply(obj, args);
+      }
+      default:
+        throw new Error('Should not evaluate invalid expressions');
+  }
+};
+
 const walk = (node: Expression): any => {
   switch (node.type) {
     case 'Literal': return node.value;
@@ -48,18 +73,7 @@ const walk = (node: Expression): any => {
     case 'ArrayExpression': return node.elements.map(node => walk(node as Expression))
     case "CallExpression":
     case "NewExpression":
-      if (node.callee.type === "Identifier") {
-        const callee = getScopeFunction((node.callee).name) as Function;
-        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
-        return node.type === 'NewExpression' ? new (callee as any)(...args) : callee.apply(callee, args)
-      }
-      else if (node.callee.type === "MemberExpression" && node.callee.object.type === "Identifier" && node.callee.property.type === "Identifier") {
-        const object = getMemberObject((node.callee.object.name));
-        const property = node.callee.property.name;
-        const args = node.arguments.map(arg => walk(arg as Expression)) as any[];
-        return (object[property]).apply(object[property], args);
-      }
-      throw new Error('Should not evaluate invalid expressions');
+      return memberExpression(node);
     case "ObjectExpression":
       const obj: { [key: string]: any } = {};
       node.properties.forEach(property => {

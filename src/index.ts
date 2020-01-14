@@ -4,7 +4,8 @@ import {
   BaseCallExpression,
   Expression,
   SpreadElement,
-  Pattern
+  Pattern,
+  Identifier
 } from "estree";
 import { GLOBAL_FUNCTIONS, ALLOWED_MEMBER_OBJECTS } from './scope';
 import { executeAST } from './eval';
@@ -28,8 +29,13 @@ const checkSafeCall = (node: BaseCallExpression) => {
   } else if (node.callee.type === "MemberExpression") {
     const expression = node.callee;
     // If we're only referring to identifiers, we don't need to check deeply.
-    if (expression.object.type === "Identifier" && expression.property.type === "Identifier") {
+    if (expression.object.type === "Identifier") {
       return ALLOWED_MEMBER_OBJECTS.indexOf(expression.object.name) >= 0 && node.arguments.every(checkSafeExpression);
+    } else if (expression.object.type === "NewExpression") {
+      // TODO: Check if this prop actually exists on the object
+      return ALLOWED_MEMBER_OBJECTS.indexOf((expression.object.callee as Identifier).name) >= 0 && node.arguments.every(checkSafeExpression);
+    } else {
+      return checkSafeExpression(expression.object as Expression) && node.arguments.every(checkSafeExpression)
     }
   }
   return false;

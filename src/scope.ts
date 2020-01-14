@@ -55,7 +55,8 @@ const MEMBER_EXPRESSIONS: { [x: string]: { [x: string]: Function}} = {
       acc[fn] = Math[fn];
     }
     return acc;
-  }, {} as {[x: string]: Function})
+  }, {} as {[x: string]: Function}),
+  Date: {}
 }
 
 export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
@@ -68,9 +69,9 @@ export function getScopeFunction(key: string): Function {
   throw new Error(`Attempted to access scope property '${key}' that doesn't exist`);
 }
 
-export function getMemberObject(key: string): { [x: string]: Function } {
-  if (MEMBER_EXPRESSIONS[key]) {
-    return MEMBER_EXPRESSIONS[key];
+export function getMemberProperty(object: string, property: string): Function {
+  if (MEMBER_EXPRESSIONS[object] && MEMBER_EXPRESSIONS[object][property]) {
+    return MEMBER_EXPRESSIONS[object][property];
   }
-  throw new Error(`Attempted to access member '${key}' that doesn't exist`);
+  throw new Error(`Attempted to access property '${object}.${property}' that doesn't exist`);
 }
