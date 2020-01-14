@@ -13,10 +13,12 @@
   "scripts": {
     "build": "preconstruct build",
     "dev": "microbundle dev",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml,json}'"
   },
   "dependencies": {
-    "acorn": "^7.1.0"
+    "acorn": "^7.1.0",
+    "prettier": "^1.19.1"
   },
   "peerDependencies": {
     "bson": "^1.0.9"
