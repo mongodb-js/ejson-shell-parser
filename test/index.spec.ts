@@ -1,15 +1,15 @@
-import bson from "bson";
-import parse from "../src";
+import bson from 'bson';
+import parse from '../src';
 
-it("should correctly parse a valid object", function() {
-  expect(parse('{_id:"hello"}')).toEqual({ _id: "hello" });
+it('should correctly parse a valid object', function() {
+  expect(parse('{_id:"hello"}')).toEqual({ _id: 'hello' });
 });
 
-it("should accept an empty object", function() {
-  expect(parse("{ }")).toEqual({});
+it('should accept an empty object', function() {
+  expect(parse('{ }')).toEqual({});
 });
 
-it("should accept a complex query", function() {
+it('should accept a complex query', function() {
   expect(
     parse(`{
     RegExp: /test/ig,
@@ -37,20 +37,20 @@ it("should accept a complex query", function() {
   }`)
   ).toEqual({
     RegExp: /test/gi,
-    Binary: new bson.Binary("" as any),
-    BinData: new bson.Binary(Buffer.from("dGVzdAo=", "base64"), 3),
+    Binary: new bson.Binary('' as any),
+    BinData: new bson.Binary(Buffer.from('dGVzdAo=', 'base64'), 3),
     UUID: new bson.Binary(
-      Buffer.from("3d37923dab8e49319e4693df5fd3599e", "hex"),
+      Buffer.from('3d37923dab8e49319e4693df5fd3599e', 'hex'),
       4
     ),
-    Code: new bson.Code("function() {}"),
+    Code: new bson.Code('function() {}'),
     DBRef: new bson.DBRef(
-      "tests",
-      new bson.ObjectId("5e159ba7eac34211f2252aaa"),
-      "test"
+      'tests',
+      new bson.ObjectId('5e159ba7eac34211f2252aaa'),
+      'test'
     ),
     Decimal128: new bson.Decimal128(128 as any),
-    NumberDecimal: bson.Decimal128.fromString("12345"),
+    NumberDecimal: bson.Decimal128.fromString('12345'),
     Double: new bson.Double(10.1),
     Int32: new bson.Int32(10),
     NumberInt: 100,
@@ -59,16 +59,16 @@ it("should accept a complex query", function() {
     Int64: bson.Long.fromNumber(120),
     MaxKey: new bson.MaxKey(),
     MinKey: new bson.MinKey(),
-    ObjectID: new bson.ObjectID("5e159ba7eac34211f2252aaa"),
-    ObjectId: new bson.ObjectId("5e159ba7eac34211f2252aaa"),
-    Symbol: new bson.Symbol("symbol"),
+    ObjectID: new bson.ObjectID('5e159ba7eac34211f2252aaa'),
+    ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
+    Symbol: new bson.Symbol('symbol'),
     Timestamp: new bson.Timestamp(123, 456),
-    ISODate: new Date("2020-01-01 12:00:00"),
-    Date: new Date("2020-01-01 12:00:00")
+    ISODate: new Date('2020-01-01 12:00:00'),
+    Date: new Date('2020-01-01 12:00:00'),
   });
 });
 
-it("should support binary operators (like plus / minus)", function() {
+it('should support binary operators (like plus / minus)', function() {
   expect(
     parse(`{
     _id: ObjectId("5e159ba7eac34211f2252aaa"),
@@ -76,13 +76,13 @@ it("should support binary operators (like plus / minus)", function() {
     filter: { year: { $gte: 2021 - (1/2 + 0.5 - (5 * 0)) } },
   }`)
   ).toEqual({
-    _id: new bson.ObjectId("5e159ba7eac34211f2252aaa"),
+    _id: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     created: new bson.Timestamp(20, 10),
-    filter: { year: { $gte: 2020 } }
+    filter: { year: { $gte: 2020 } },
   });
 });
 
-it("should support parsing array operators", function() {
+it('should support parsing array operators', function() {
   expect(
     parse(`[{
     "$match": {
@@ -111,48 +111,52 @@ it("should support parsing array operators", function() {
         released: {
           $gte: {
             $date: {
-              $numberLong: "-1806710400000"
-            }
-          }
-        }
-      }
+              $numberLong: '-1806710400000',
+            },
+          },
+        },
+      },
     },
     {
       $group: {
         _id: {
-          __alias_0: "$year"
+          __alias_0: '$year',
         },
         __alias_1: {
-          $sum: 1
-        }
-      }
-    }
+          $sum: 1,
+        },
+      },
+    },
   ]);
 });
 
-
-
-it("should not allow calling functions that do not exist", function() {
-  expect(parse('{ date: require("") }')).toEqual("");
+it('should not allow calling functions that do not exist', function() {
+  expect(parse('{ date: require("") }')).toEqual('');
 });
 
-describe("member expressions", function() {
-  describe("Math", function() {
-    it("should allow parsing while using functions from Math", function() {
-  expect(parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }')).toEqual({ floor: 5, ceil: 6 })
-});
+describe('member expressions', function() {
+  describe('Math', function() {
+    it('should allow parsing while using functions from Math', function() {
+      expect(
+        parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }')
+      ).toEqual({ floor: 5, ceil: 6 });
+    });
 
-it("Should be able to handle math expressions", function() {
-  expect(parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')).toEqual({ simpleCalc: 31 })
-});
+    it('Should be able to handle math expressions', function() {
+      expect(
+        parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')
+      ).toEqual({ simpleCalc: 31 });
+    });
   });
 
-  describe("Date", function() {
-    it("should allow member expressions", function() {
-  expect(parse("{ year: (new Date(0)).getFullYear() }")).toEqual({ year: 1970 });
-});
+  describe('Date', function() {
+    it('should allow member expressions', function() {
+      expect(parse('{ year: (new Date(0)).getFullYear() }')).toEqual({
+        year: 1970,
+      });
+    });
   });
 });
-it("should not allow calling IIFE", function() {
-  expect(parse('{ date: (function() { return "10"; })() }')).toEqual("");
+it('should not allow calling IIFE', function() {
+  expect(parse('{ date: (function() { return "10"; })() }')).toEqual('');
 });

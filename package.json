@@ -14,7 +14,7 @@
     "build": "preconstruct build",
     "dev": "microbundle dev",
     "test": "jest",
-    "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml,json}'"
+    "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'"
   },
   "dependencies": {
     "acorn": "^7.1.0",

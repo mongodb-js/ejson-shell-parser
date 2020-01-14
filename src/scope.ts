@@ -1,19 +1,22 @@
 import bson from 'bson';
 
 type AllowedFieldsWithType<Obj, Type> = {
-    [K in keyof Obj]: Obj[K] extends Type ? K : never
+  [K in keyof Obj]: Obj[K] extends Type ? K : never;
 };
 
-type ExtractFieldsOfType<Obj, Type> = AllowedFieldsWithType<Obj, Type>[keyof Obj]
+type ExtractFieldsOfType<Obj, Type> = AllowedFieldsWithType<
+  Obj,
+  Type
+>[keyof Obj];
 
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,
   Binary: bson.Binary,
   BinData: function(t: any, d: any) {
-    return new bson.Binary(Buffer.from(d, "base64"), t);
+    return new bson.Binary(Buffer.from(d, 'base64'), t);
   },
   UUID: function(u: any) {
-    return new bson.Binary(Buffer.from(u.replace(/-/g, ""), "hex"), 4);
+    return new bson.Binary(Buffer.from(u.replace(/-/g, ''), 'hex'), 4);
   },
   Code: function(c: any, s: any) {
     return new bson.Code(c, s);
@@ -46,32 +49,42 @@ const SCOPE: { [x: string]: Function } = {
   },
   Date: function(s: any) {
     return s === undefined ? new Date() : new Date(s);
-  }
+  },
 };
 
-const MEMBER_EXPRESSIONS: { [x: string]: { [x: string]: Function}} = {
-  Math: (Object.getOwnPropertyNames(Math) as ExtractFieldsOfType<Math, Function>[]).reduce((acc, fn) => {
-    if (typeof Math[fn] === "function") {
-      acc[fn] = Math[fn];
-    }
-    return acc;
-  }, {} as {[x: string]: Function}),
-  Date: {}
-}
+type MathFunctions = ExtractFieldsOfType<Math, Function>[];
+const MEMBER_EXPRESSIONS: { [x: string]: { [x: string]: Function } } = {
+  Math: (Object.getOwnPropertyNames(Math) as MathFunctions).reduce(
+    (acc, fn) => {
+      if (typeof Math[fn] === 'function') {
+        acc[fn] = Math[fn];
+      }
+      return acc;
+    },
+    {} as { [x: string]: Function }
+  ),
+  Date: {},
+};
 
 export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
-export const ALLOWED_MEMBER_OBJECTS = Object.freeze(Object.keys(MEMBER_EXPRESSIONS));
+export const ALLOWED_MEMBER_OBJECTS = Object.freeze(
+  Object.keys(MEMBER_EXPRESSIONS)
+);
 
 export function getScopeFunction(key: string): Function {
   if (SCOPE[key]) {
     return SCOPE[key];
   }
-  throw new Error(`Attempted to access scope property '${key}' that doesn't exist`);
+  throw new Error(
+    `Attempted to access scope property '${key}' that doesn't exist`
+  );
 }
 
 export function getMemberProperty(object: string, property: string): Function {
   if (MEMBER_EXPRESSIONS[object] && MEMBER_EXPRESSIONS[object][property]) {
     return MEMBER_EXPRESSIONS[object][property];
   }
-  throw new Error(`Attempted to access property '${object}.${property}' that doesn't exist`);
+  throw new Error(
+    `Attempted to access property '${object}.${property}' that doesn't exist`
+  );
 }

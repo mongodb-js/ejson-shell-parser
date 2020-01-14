@@ -56,26 +56,27 @@ const sample = `({
   }
 })`;
 
-var suite = new Benchmark.Suite;
+var suite = new Benchmark.Suite();
 
 // add tests
-suite.add('parseEJSON#eval', function() {
-  parseEJSON(sample)
-})
-.add('parseEJSON#walk', function() {
-  parseEJSON(sample, { evalUsingTree: true })
-})
-.add('mongodb-query-parser#insecure', function() {
-  parseFilter(sample);
-})
-.add('eval', function() {
-  eval(sample);
-})
-// add listeners
-.on('cycle', function(event) {
-  console.log(String(event.target));
-})
-.on('complete', function() {
-  console.log('Fastest is ' + this.filter('fastest').map('name'));
-})
-.run({ 'async': true });
+suite
+  .add('parseEJSON#eval', function() {
+    parseEJSON(sample);
+  })
+  .add('parseEJSON#walk', function() {
+    parseEJSON(sample, { evalUsingTree: true });
+  })
+  .add('mongodb-query-parser#insecure', function() {
+    parseFilter(sample);
+  })
+  .add('eval', function() {
+    eval(sample);
+  })
+  // add listeners
+  .on('cycle', function(event) {
+    console.log(String(event.target));
+  })
+  .on('complete', function() {
+    console.log('Fastest is ' + this.filter('fastest').map('name'));
+  })
+  .run({ async: true });
