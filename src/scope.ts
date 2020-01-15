@@ -35,15 +35,17 @@ const SCOPE: { [x: string]: Function } = {
   Timestamp: function(low: any, high: any) {
     return new bson.Timestamp(low, high);
   },
-  ISODate: function(s: any) {
-    return s === undefined
-      ? new Date()
-      : new Date(...(Array.from(arguments) as []));
+  ISODate: function(...s: any[]) {
+    // casting our arguments as an empty array because we don't know
+    // the length of our arguments, and should allow users to pass what
+    // they want as date arguments
+    return s === undefined ? new Date() : new Date(...(s as []));
   },
-  Date: function(s: any) {
-    return s === undefined
-      ? new Date()
-      : new Date(...(Array.from(arguments) as []));
+  Date: function(...s: any[]) {
+    // casting our arguments as an empty array because we don't know
+    // the length of our arguments, and should allow users to pass what
+    // they want as date arguments
+    return s === undefined ? new Date() : new Date(...(s as []));
   },
   Math: function() {
     return Math;
