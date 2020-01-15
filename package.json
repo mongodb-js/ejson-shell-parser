@@ -17,8 +17,7 @@
     "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'"
   },
   "dependencies": {
-    "acorn": "^7.1.0",
-    "prettier": "^1.19.1"
+    "acorn": "^7.1.0"
   },
   "peerDependencies": {
     "bson": "^1.0.9"
@@ -33,6 +32,7 @@
     "bson": "^1.0.9",
     "jest": "^24.9.0",
     "mongodb-query-parser": "^1.4.3",
+    "prettier": "^1.19.1",
     "ts-jest": "^24.3.0",
     "typescript": "^3.7.4"
   },
