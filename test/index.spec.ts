@@ -1,5 +1,6 @@
 import bson from 'bson';
 import parse from '../src';
+import { Options } from '../src/types';
 
 it('should correctly parse a valid object', function() {
   expect(parse('{_id:"hello"}')).toEqual({ _id: 'hello' });
@@ -134,28 +135,33 @@ it('should not allow calling functions that do not exist', function() {
   expect(parse('{ date: require("") }')).toEqual('');
 });
 
-describe('member expressions', function() {
+describe('weak parsing', function() {
+  const options: Options = {
+    weakParsing: true,
+  };
   describe('Math', function() {
     it('should allow parsing while using functions from Math', function() {
       expect(
-        parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }')
+        parse('{ floor: Math.floor(5.5), ceil: Math.ceil(5.5) }', options)
       ).toEqual({ floor: 5, ceil: 6 });
     });
 
     it('should be able to handle math expressions', function() {
       expect(
-        parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')
+        parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }', options)
       ).toEqual({ simpleCalc: 31 });
     });
 
     it('should prevent invalid functions', function() {
-      expect(parse('{ simpleCalc: Math.totallyLegit(5) }')).toEqual('');
+      expect(parse('{ simpleCalc: Math.totallyLegit(5) }', options)).toEqual(
+        ''
+      );
     });
   });
 
   describe('Date', function() {
     it('should allow member expressions', function() {
-      expect(parse('{ year: (new Date(0)).getFullYear() }')).toEqual({
+      expect(parse('{ year: (new Date(0)).getFullYear() }', options)).toEqual({
         year: 1970,
       });
     });
@@ -166,12 +172,14 @@ describe('member expressions', function() {
           `{
             dayOfYear: Math.round((new Date(1578974885017).setHours(23)
             - new Date(new Date(1578974885017).getYear(), 0, 1, 0, 0, 0))/1000/60/60/24)
-          }`
+          }`,
+          options
         )
       ).toEqual('');
     });
   });
 });
+
 it('should not allow calling IIFE', function() {
   expect(parse('{ date: (function() { return "10"; })() }')).toEqual('');
 });
