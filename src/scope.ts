@@ -36,10 +36,14 @@ const SCOPE: { [x: string]: Function } = {
     return new bson.Timestamp(low, high);
   },
   ISODate: function(s: any) {
-    return s === undefined ? new Date() : new Date(s);
+    return s === undefined
+      ? new Date()
+      : new Date(...(Array.from(arguments) as []));
   },
   Date: function(s: any) {
-    return s === undefined ? new Date() : new Date(s);
+    return s === undefined
+      ? new Date()
+      : new Date(...(Array.from(arguments) as []));
   },
   Math: function() {
     return Math;
