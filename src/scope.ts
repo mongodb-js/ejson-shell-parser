@@ -1,4 +1,4 @@
-import bson from 'bson';
+import * as bson from 'bson';
 
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,

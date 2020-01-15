@@ -1,4 +1,4 @@
-import bson, { ObjectId } from 'bson';
+import * as bson from 'bson';
 import parse from '../src';
 import { Options } from '../src/types';
 
@@ -176,7 +176,7 @@ describe('weak parsing', function() {
     [
       '{ _id: { $gte: ObjectId(Math.floor((new Date(1578974885017)).setSeconds(-2592000)/1000).toString(16)+"0000000000000000")}, event: "passing_tests"}',
       {
-        _id: { $gte: new ObjectId('5df5b1a00000000000000000') },
+        _id: { $gte: new bson.ObjectId('5df5b1a00000000000000000') },
         event: 'passing_tests',
       },
     ],
