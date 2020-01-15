@@ -1,15 +1,11 @@
 import {
-  Expression,
   UnaryExpression,
   BinaryExpression,
   Identifier,
   Node,
-  ObjectExpression,
-  MemberExpression,
   CallExpression,
-  NewExpression,
 } from 'estree';
-import { getScopeFunction, allowedMemberProp } from './scope';
+import { getScopeFunction } from './scope';
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
