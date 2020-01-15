@@ -1,4 +1,4 @@
-import bson from 'bson';
+import bson, { ObjectId } from 'bson';
 import parse from '../src';
 import { Options } from '../src/types';
 
@@ -165,17 +165,24 @@ describe('weak parsing', function() {
         year: 1970,
       });
     });
+  });
 
-    it('should not allow chaining member expressions', function() {
-      expect(
-        parse(
-          `{
-            dayOfYear: Math.round((new Date(1578974885017).setHours(23)
-            - new Date(new Date(1578974885017).getYear(), 0, 1, 0, 0, 0))/1000/60/60/24)
-          }`,
-          options
-        )
-      ).toEqual('');
+  // Testing more realistic examples of using the Date object
+  describe.each([
+    [
+      '{ dayOfYear: Math.round((new Date(1578974885017).setHours(23) - new Date(new Date(1578974885017).getYear()+1900, 0, 1, 0, 0, 0))/1000/60/60/24)}',
+      { dayOfYear: 14 },
+    ],
+    [
+      '{ _id: { $gte: ObjectId(Math.floor((new Date(1578974885017)).setSeconds(-2592000)/1000).toString(16)+"0000000000000000")}, event: "passing_tests"}',
+      {
+        _id: { $gte: new ObjectId('5df5b1a00000000000000000') },
+        event: 'passing_tests',
+      },
+    ],
+  ])('complicated parsing of Math and Date', (input, result) => {
+    it(`should parse ${input} as ${JSON.stringify(result)}`, function() {
+      expect(parse(input, options)).toEqual(result);
     });
   });
 });
