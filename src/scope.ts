@@ -1,14 +1,5 @@
 import bson from 'bson';
 
-type AllowedFieldsWithType<Obj, Type> = {
-  [K in keyof Obj]: Obj[K] extends Type ? K : never;
-};
-
-type ExtractFieldsOfType<Obj, Type> = AllowedFieldsWithType<
-  Obj,
-  Type
->[keyof Obj];
-
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,
   Binary: bson.Binary,
@@ -50,26 +41,88 @@ const SCOPE: { [x: string]: Function } = {
   Date: function(s: any) {
     return s === undefined ? new Date() : new Date(s);
   },
+  Math: function() {
+    return Math;
+  },
 };
 
-type MathFunctions = ExtractFieldsOfType<Math, Function>[];
-const MEMBER_EXPRESSIONS: { [x: string]: { [x: string]: Function } } = {
-  Math: (Object.getOwnPropertyNames(Math) as MathFunctions).reduce(
-    (acc, fn) => {
-      if (typeof Math[fn] === 'function') {
-        acc[fn] = Math[fn];
-      }
-      return acc;
-    },
-    {} as { [x: string]: Function }
-  ),
-  Date: {},
+const ALLOWED_MEMBER_EXPRESSIONS: { [x: string]: Set<string> } = {
+  Math: new Set([
+    'abs',
+    'acos',
+    'acosh',
+    'asin',
+    'asinh',
+    'atan',
+    'atanh',
+    'atan2',
+    'ceil',
+    'cbrt',
+    'expm1',
+    'clz32',
+    'cos',
+    'cosh',
+    'exp',
+    'floor',
+    'fround',
+    'hypot',
+    'imul',
+    'log',
+    'log1p',
+    'log2',
+    'log10',
+    'max',
+    'min',
+    'pow',
+    'random',
+    'round',
+    'sign',
+    'sin',
+    'sinh',
+    'sqrt',
+    'tan',
+    'tanh',
+    'trunc',
+  ]),
+  Date: new Set([
+    'now',
+    'getDate',
+    'getDay',
+    'getFullYear',
+    'getHours',
+    'getMilliseconds',
+    'getMinutes',
+    'getMonth',
+    'getSeconds',
+    'getTime',
+    'getTimezoneOffset',
+    'getUTCDate',
+    'getUTCDay',
+    'getUTCFullYear',
+    'getUTCHours',
+    'getUTCMilliseconds',
+    'getUTCMinutes',
+    'getUTCMonth',
+    'getUTCSeconds',
+    'setDate',
+    'setFullYear',
+    'setHours',
+    'setMilliseconds',
+    'setMinutes',
+    'setMonth',
+    'setSeconds',
+    'setTime',
+    'setUTCDate',
+    'setUTCFullYear',
+    'setUTCHours',
+    'setUTCMilliseconds',
+    'setUTCMinutes',
+    'setUTCMonth',
+    'setUTCSeconds',
+  ]),
 };
 
 export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
-export const ALLOWED_MEMBER_OBJECTS = Object.freeze(
-  Object.keys(MEMBER_EXPRESSIONS)
-);
 
 export function getScopeFunction(key: string): Function {
   if (SCOPE[key]) {
@@ -80,11 +133,9 @@ export function getScopeFunction(key: string): Function {
   );
 }
 
-export function getMemberProperty(object: string, property: string): Function {
-  if (MEMBER_EXPRESSIONS[object] && MEMBER_EXPRESSIONS[object][property]) {
-    return MEMBER_EXPRESSIONS[object][property];
-  }
-  throw new Error(
-    `Attempted to access property '${object}.${property}' that doesn't exist`
+export function allowedMemberProp(object: string, property: string): boolean {
+  return (
+    ALLOWED_MEMBER_EXPRESSIONS[object] &&
+    ALLOWED_MEMBER_EXPRESSIONS[object].has(property)
   );
 }

@@ -9,7 +9,7 @@ import {
   CallExpression,
   NewExpression,
 } from 'estree';
-import { getScopeFunction, getMemberProperty } from './scope';
+import { getScopeFunction, allowedMemberProp } from './scope';
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
@@ -81,7 +81,7 @@ const memberExpression = (node: CallExpression): any => {
   switch (node.callee.type) {
     case 'Identifier':
       // Handing <Constructor>() and new <Constructor>() cases
-      const callee = getScopeFunction(node.callee.name) as Function;
+      const callee = getScopeFunction(node.callee.name);
       const args = node.arguments.map(arg => walk(arg));
       return node.type === 'NewExpression'
         ? new (callee as any)(...args)
@@ -89,13 +89,14 @@ const memberExpression = (node: CallExpression): any => {
     case 'MemberExpression':
       // If they're using a static method on a member
       if (node.callee.object.type === 'Identifier') {
+        const callee = getScopeFunction(node.callee.object.name);
         const property = (node.callee.property as Identifier).name;
-        const fn = getMemberProperty(node.callee.object.name, property);
         const args = node.arguments.map(arg => walk(arg));
-        return fn.apply(fn, args);
+        return callee()[property].apply(callee, args);
       } else if (node.callee.property.type === 'Identifier') {
         const obj = walk(node.callee.object);
         const property = node.callee.property.name;
+
         const args = node.arguments.map(arg => walk(arg));
         return obj[property].apply(obj, args);
       }

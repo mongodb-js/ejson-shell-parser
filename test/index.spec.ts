@@ -142,10 +142,14 @@ describe('member expressions', function() {
       ).toEqual({ floor: 5, ceil: 6 });
     });
 
-    it('Should be able to handle math expressions', function() {
+    it('should be able to handle math expressions', function() {
       expect(
         parse('{ simpleCalc: (5 * Math.floor(5.5) + Math.ceil(5.5)) }')
       ).toEqual({ simpleCalc: 31 });
+    });
+
+    it('should prevent invalid functions', function() {
+      expect(parse('{ simpleCalc: Math.totallyLegit(5) }')).toEqual('');
     });
   });
 
@@ -156,7 +160,7 @@ describe('member expressions', function() {
       });
     });
 
-    it('should allow chaining member expressions', function() {
+    it('should not allow chaining member expressions', function() {
       expect(
         parse(
           `{
@@ -164,9 +168,7 @@ describe('member expressions', function() {
             - new Date(new Date(1578974885017).getYear(), 0, 1, 0, 0, 0))/1000/60/60/24)
           }`
         )
-      ).toEqual({
-        dayOfYear: 18276,
-      });
+      ).toEqual('');
     });
   });
 });
