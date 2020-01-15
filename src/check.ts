@@ -20,26 +20,23 @@ const checkSafeCall = (node: BaseCallExpression) => {
       node.arguments.every(checkSafeExpression)
     );
   } else if (node.callee.type === 'MemberExpression') {
-    const expression = node.callee;
+    const object = node.callee.object;
+    const property = node.callee.property as Identifier;
     // If we're only referring to identifiers, we don't need to check deeply.
-    if (
-      expression.object.type === 'Identifier' &&
-      expression.property.type === 'Identifier'
-    ) {
-      return (
-        allowedMemberProp(expression.object.name, expression.property.name) &&
-        node.arguments.every(checkSafeExpression)
-      );
-    } else if (expression.object.type === 'NewExpression') {
-      const object = expression.object.callee as Identifier;
-      const property = expression.property as Identifier;
+    if (object.type === 'Identifier' && property.type === 'Identifier') {
       return (
         allowedMemberProp(object.name, property.name) &&
         node.arguments.every(checkSafeExpression)
       );
+    } else if (object.type === 'NewExpression') {
+      const callee = object.callee as Identifier;
+      return (
+        allowedMemberProp(callee.name, property.name) &&
+        node.arguments.every(checkSafeExpression)
+      );
     } else {
       return (
-        checkSafeExpression(expression.object as Expression) &&
+        checkSafeExpression(object as Expression) &&
         node.arguments.every(checkSafeExpression)
       );
     }
