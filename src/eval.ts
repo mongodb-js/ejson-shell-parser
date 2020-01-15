@@ -85,10 +85,10 @@ const memberExpression = (node: CallExpression): any => {
     case 'MemberExpression':
       // If they're using a static method on a member
       if (node.callee.object.type === 'Identifier') {
-        const callee = getScopeFunction(node.callee.object.name);
+        const callee = getScopeFunction(node.callee.object.name)();
         const property = (node.callee.property as Identifier).name;
         const args = node.arguments.map(arg => walk(arg));
-        return callee()[property].apply(callee, args);
+        return callee[property].apply(callee, args);
       } else if (node.callee.property.type === 'Identifier') {
         const obj = walk(node.callee.object);
         const property = node.callee.property.name;
