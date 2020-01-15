@@ -84,7 +84,6 @@ const ALLOWED_MEMBER_EXPRESSIONS: { [x: string]: Set<string> } = {
     'trunc',
   ]),
   Date: new Set([
-    'now',
     'getDate',
     'getDay',
     'getFullYear',
@@ -103,6 +102,8 @@ const ALLOWED_MEMBER_EXPRESSIONS: { [x: string]: Set<string> } = {
     'getUTCMinutes',
     'getUTCMonth',
     'getUTCSeconds',
+    'getYear',
+    'now',
     'setDate',
     'setFullYear',
     'setHours',
@@ -118,6 +119,7 @@ const ALLOWED_MEMBER_EXPRESSIONS: { [x: string]: Set<string> } = {
     'setUTCMinutes',
     'setUTCMonth',
     'setUTCSeconds',
+    'setYear',
   ]),
 };
 
