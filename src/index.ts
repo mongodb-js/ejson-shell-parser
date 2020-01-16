@@ -15,7 +15,7 @@ export default function parse(
 ) {
   const wrapped = `(${input})`;
   const ast = buildAST(wrapped);
-  if (checkTree(ast, options)) {
+  if (checkTree(ast, { ...DefaultOptions, ...options })) {
     return executeAST(ast);
   }
   return '';
