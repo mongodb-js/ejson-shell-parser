@@ -162,6 +162,7 @@ const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
       setUTCMonth: true,
       setUTCSeconds: true,
       setYear: true,
+      toISOString: true,
     },
   },
 };
