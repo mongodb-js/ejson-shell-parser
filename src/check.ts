@@ -5,6 +5,7 @@ import {
   SpreadElement,
   Pattern,
   Identifier,
+  NewExpression,
 } from 'estree';
 
 import { GLOBAL_FUNCTIONS, allowedMemberProp } from './scope';
@@ -33,7 +34,10 @@ class Checker {
           allowedMemberProp(object.name, property.name) &&
           node.arguments.every(this.checkSafeExpression)
         );
-      } else if (object.type === 'NewExpression') {
+      } else if (
+        object.type === 'NewExpression' ||
+        object.type === 'CallExpression'
+      ) {
         const callee = object.callee as Identifier;
         return (
           allowedMemberProp(callee.name, property.name) &&

@@ -76,10 +76,18 @@ const SCOPE: { [x: string]: Function } = {
   },
 };
 
+type AllowedMethods = { [methodName: string]: boolean };
+
+/**
+ * Internal object of Member -> Allowed methods on that member.
+ *
+ * Allowed Methods is allowed to be a string, which just indirects to another member.
+ * (Pretty much only for ISODate to save on some boilerplate)
+ */
 type MemberExpressions = {
   [member: string]: {
     member: Object;
-    allowedMethods: { [methodName: string]: boolean };
+    allowedMethods: AllowedMethods | string;
   };
 };
 
@@ -165,6 +173,10 @@ const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
       toISOString: true,
     },
   },
+  ISODate: {
+    member: Date,
+    allowedMethods: 'Date',
+  },
 };
 
 export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
@@ -179,10 +191,17 @@ export function getScopeFunction(key: string): Function {
 }
 
 export function allowedMemberProp(member: string, property: string): boolean {
-  return (
-    ALLOWED_MEMBER_EXPRESSIONS[member] &&
-    ALLOWED_MEMBER_EXPRESSIONS[member].allowedMethods[property]
-  );
+  if (ALLOWED_MEMBER_EXPRESSIONS[member]) {
+    const allowedMethods = ALLOWED_MEMBER_EXPRESSIONS[member].allowedMethods;
+
+    if (typeof allowedMethods === 'string') {
+      return (ALLOWED_MEMBER_EXPRESSIONS[allowedMethods]
+        .allowedMethods as AllowedMethods)[property];
+    }
+    return allowedMethods[property];
+  }
+
+  return false;
 }
 
 export function getMember(member: string): any {

@@ -174,11 +174,95 @@ describe('weak parsing', function() {
       dateSpy.mockRestore();
     });
 
-    it('should allow member expressions', function() {
-      expect(parse('{ year: (new Date(0)).getFullYear() }', options)).toEqual({
-        year: 1970,
-      });
-    });
+    describe.each(['new Date', 'new ISODate', 'Date', 'ISODate'])(
+      'Date allow using member methods with "%s"',
+      dateFn => {
+        it('should allow member expressions', function() {
+          const input = `{
+          getDate: (${dateFn}(1578974885017)).getDate(),
+          getDay: (${dateFn}(1578974885017)).getDay(),
+          getFullYear: (${dateFn}(1578974885017)).getFullYear(),
+          getHours: (${dateFn}(1578974885017)).getHours(),
+          getMilliseconds: (${dateFn}(1578974885017)).getMilliseconds(),
+          getMinutes: (${dateFn}(1578974885017)).getMinutes(),
+          getMonth: (${dateFn}(1578974885017)).getMonth(),
+          getSeconds: (${dateFn}(1578974885017)).getSeconds(),
+          getTime: (${dateFn}(1578974885017)).getTime(),
+          getTimezoneOffset: (${dateFn}(1578974885017)).getTimezoneOffset(),
+          getUTCDate: (${dateFn}(1578974885017)).getUTCDate(),
+          getUTCDay: (${dateFn}(1578974885017)).getUTCDay(),
+          getUTCFullYear: (${dateFn}(1578974885017)).getUTCFullYear(),
+          getUTCHours: (${dateFn}(1578974885017)).getUTCHours(),
+          getUTCMilliseconds: (${dateFn}(1578974885017)).getUTCMilliseconds(),
+          getUTCMinutes: (${dateFn}(1578974885017)).getUTCMinutes(),
+          getUTCMonth: (${dateFn}(1578974885017)).getUTCMonth(),
+          getUTCSeconds: (${dateFn}(1578974885017)).getUTCSeconds(),
+          getYear: (${dateFn}(1578974885017)).getYear(),
+          setDate: (${dateFn}(1578974885017)).setDate(24),
+          setFullYear: (${dateFn}(1578974885017)).setFullYear(2010),
+          setHours: (${dateFn}(1578974885017)).setHours(23),
+          setMilliseconds: (${dateFn}(1578974885017)).setMilliseconds(1),
+          setMinutes: (${dateFn}(1578974885017)).setMinutes(1),
+          setMonth: (${dateFn}(1578974885017)).setMonth(1),
+          setSeconds: (${dateFn}(1578974885017)).setSeconds(59),
+          setTime: (${dateFn}(1578974885017)).setTime(10),
+          setUTCDate: (${dateFn}(1578974885017)).setUTCDate(24),
+          setUTCFullYear: (${dateFn}(1578974885017)).setUTCFullYear(2010),
+          setUTCHours: (${dateFn}(1578974885017)).setUTCHours(23),
+          setUTCMilliseconds: (${dateFn}(1578974885017)).setUTCMilliseconds(1),
+          setUTCMinutes: (${dateFn}(1578974885017)).setUTCMinutes(1),
+          setUTCMonth: (${dateFn}(1578974885017)).setUTCMonth(1),
+          setUTCSeconds: (${dateFn}(1578974885017)).setUTCSeconds(59),
+          setYear: (${dateFn}(1578974885017)).setYear(96),
+          toISOString: (${dateFn}(1578974885017)).toISOString(),
+       }`;
+
+          expect(parse(input, options)).toEqual({
+            getDate: 14,
+            getDay: 2,
+            getFullYear: 2020,
+            getHours: 15,
+            getMilliseconds: 17,
+            getMinutes: 8,
+            getMonth: 0,
+            getSeconds: 5,
+            getTime: 1578974885017,
+            getTimezoneOffset: -660,
+            getUTCDate: 14,
+            getUTCDay: 2,
+            getUTCFullYear: 2020,
+            getUTCHours: 4,
+            getUTCMilliseconds: 17,
+            getUTCMinutes: 8,
+            getUTCMonth: 0,
+            getUTCSeconds: 5,
+            getYear: 120,
+            setDate: 1579838885017,
+            setFullYear: 1263442085017,
+            setHours: 1579003685017,
+            setMilliseconds: 1578974885001,
+            setMinutes: 1578974465017,
+            setMonth: 1581653285017,
+            setSeconds: 1578974939017,
+            setTime: 10,
+            setUTCDate: 1579838885017,
+            setUTCFullYear: 1263442085017,
+            setUTCHours: 1579043285017,
+            setUTCMilliseconds: 1578974885001,
+            setUTCMinutes: 1578974465017,
+            setUTCMonth: 1581653285017,
+            setUTCSeconds: 1578974939017,
+            setYear: 821592485017,
+            toISOString: '2020-01-14T04:08:05.017Z',
+          });
+        });
+
+        it('should prevent invalid functions', function() {
+          const input = `{ evilDate: (${dateFn}(0)).totallyLegit(5) }`;
+          expect(parse(input, options)).toEqual('');
+        });
+      }
+    );
   });
 
   // Testing more realistic examples of using the Date object
