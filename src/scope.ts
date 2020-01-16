@@ -74,85 +74,95 @@ const SCOPE: { [x: string]: Function } = {
     // they want as date arguments
     return s === undefined ? new Date() : new Date(...(s as []));
   },
-  Math: function() {
-    return Math;
-  },
 };
 
-const ALLOWED_MEMBER_EXPRESSIONS: { [x: string]: { [k: string]: boolean } } = {
+type MemberExpressions = {
+  [member: string]: {
+    member: Object;
+    allowedMethods: { [methodName: string]: boolean };
+  };
+};
+
+const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
   Math: {
-    abs: true,
-    acos: true,
-    acosh: true,
-    asin: true,
-    asinh: true,
-    atan: true,
-    atan2: true,
-    atanh: true,
-    cbrt: true,
-    ceil: true,
-    clz32: true,
-    cos: true,
-    cosh: true,
-    exp: true,
-    expm1: true,
-    floor: true,
-    fround: true,
-    hypot: true,
-    imul: true,
-    log: true,
-    log10: true,
-    log1p: true,
-    log2: true,
-    max: true,
-    min: true,
-    pow: true,
-    round: true,
-    sign: true,
-    sin: true,
-    sinh: true,
-    sqrt: true,
-    tan: true,
-    tanh: true,
-    trunc: true,
+    member: Math,
+    allowedMethods: {
+      abs: true,
+      acos: true,
+      acosh: true,
+      asin: true,
+      asinh: true,
+      atan: true,
+      atan2: true,
+      atanh: true,
+      cbrt: true,
+      ceil: true,
+      clz32: true,
+      cos: true,
+      cosh: true,
+      exp: true,
+      expm1: true,
+      floor: true,
+      fround: true,
+      hypot: true,
+      imul: true,
+      log: true,
+      log10: true,
+      log1p: true,
+      log2: true,
+      max: true,
+      min: true,
+      pow: true,
+      round: true,
+      sign: true,
+      sin: true,
+      sinh: true,
+      sqrt: true,
+      tan: true,
+      tanh: true,
+      trunc: true,
+    },
   },
   Date: {
-    getDate: true,
-    getDay: true,
-    getFullYear: true,
-    getHours: true,
-    getMilliseconds: true,
-    getMinutes: true,
-    getMonth: true,
-    getSeconds: true,
-    getTime: true,
-    getTimezoneOffset: true,
-    getUTCDate: true,
-    getUTCDay: true,
-    getUTCFullYear: true,
-    getUTCHours: true,
-    getUTCMilliseconds: true,
-    getUTCMinutes: true,
-    getUTCMonth: true,
-    getUTCSeconds: true,
-    getYear: true,
-    now: true,
-    setDate: true,
-    setFullYear: true,
-    setHours: true,
-    setMilliseconds: true,
-    setMinutes: true,
-    setMonth: true,
-    setSeconds: true,
-    setTime: true,
-    setUTCDate: true,
-    setUTCFullYear: true,
-    setUTCHours: true,
-    setUTCMilliseconds: true,
-    setUTCMinutes: true,
-    setUTCMonth: true,
-    setUTCSeconds: true,
-    setYear: true,
+    member: Date,
+    allowedMethods: {
+      getDate: true,
+      getDay: true,
+      getFullYear: true,
+      getHours: true,
+      getMilliseconds: true,
+      getMinutes: true,
+      getMonth: true,
+      getSeconds: true,
+      getTime: true,
+      getTimezoneOffset: true,
+      getUTCDate: true,
+      getUTCDay: true,
+      getUTCFullYear: true,
+      getUTCHours: true,
+      getUTCMilliseconds: true,
+      getUTCMinutes: true,
+      getUTCMonth: true,
+      getUTCSeconds: true,
+      getYear: true,
+      now: true,
+      setDate: true,
+      setFullYear: true,
+      setHours: true,
+      setMilliseconds: true,
+      setMinutes: true,
+      setMonth: true,
+      setSeconds: true,
+      setTime: true,
+      setUTCDate: true,
+      setUTCFullYear: true,
+      setUTCHours: true,
+      setUTCMilliseconds: true,
+      setUTCMinutes: true,
+      setUTCMonth: true,
+      setUTCSeconds: true,
+      setYear: true,
+    },
   },
 };
 
@@ -167,9 +177,16 @@ export function getScopeFunction(key: string): Function {
   );
 }
 
-export function allowedMemberProp(object: string, property: string): boolean {
+export function allowedMemberProp(member: string, property: string): boolean {
   return (
-    ALLOWED_MEMBER_EXPRESSIONS[object] &&
-    ALLOWED_MEMBER_EXPRESSIONS[object][property]
+    ALLOWED_MEMBER_EXPRESSIONS[member] &&
+    ALLOWED_MEMBER_EXPRESSIONS[member].allowedMethods[property]
   );
+}
+
+export function getMember(member: string): any {
+  if (ALLOWED_MEMBER_EXPRESSIONS[member]) {
+    return ALLOWED_MEMBER_EXPRESSIONS[member].member;
+  }
+  throw new Error(`Attempted to access member '${member}' that doesn't exist`);
 }

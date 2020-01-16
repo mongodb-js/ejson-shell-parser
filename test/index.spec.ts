@@ -141,6 +141,7 @@ describe('weak parsing', function() {
   const options: Options = {
     weakParsing: true,
   };
+
   describe('Math', function() {
     it('should allow parsing while using functions from Math', function() {
       expect(
@@ -162,6 +163,17 @@ describe('weak parsing', function() {
   });
 
   describe('Date', function() {
+    it('should allow calling .now()', function() {
+      const dateSpy = jest.spyOn(Date, 'now');
+      dateSpy.mockReturnValue(1578974885017);
+
+      expect(parse('{ now: Date.now() }', options)).toEqual({
+        now: 1578974885017,
+      });
+
+      dateSpy.mockRestore();
+    });
+
     it('should allow member expressions', function() {
       expect(parse('{ year: (new Date(0)).getFullYear() }', options)).toEqual({
         year: 1970,
