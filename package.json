@@ -16,6 +16,7 @@
     "test": "jest",
     "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'"
   },
+  "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "acorn": "^7.1.0"
   },
@@ -23,6 +24,10 @@
     "bson": "^1.0.9"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
     "@babel/preset-typescript": "^7.7.7",
     "@preconstruct/cli": "^1.1.4",
     "@types/bson": "^1.0.9",
