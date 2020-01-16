@@ -56,9 +56,6 @@ const SCOPE: { [x: string]: Function } = {
   ObjectId: function(i: any) {
     return new bson.ObjectID(i);
   },
-  BSONSymbol: function(i: any) {
-    return new (bson as any).BSONSymbol(i);
-  },
   Symbol: function(i: any) {
     return new (bson as any).BSONSymbol(i);
   },

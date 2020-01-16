@@ -19,7 +19,7 @@ it('should accept a complex query', function() {
     UUID: UUID('3d37923d-ab8e-4931-9e46-93df5fd3599e'),
     Code: Code('function() {}'),
     DBRef: new DBRef('tests', new ObjectId("5e159ba7eac34211f2252aaa"), 'test'),
-    Decimal128: new Decimal128(128),
+    Decimal128: new Decimal128("128"),
     NumberDecimal: NumberDecimal("12345"),
     Double: Double(10.1),
     Int32: new Int32(10),
@@ -33,7 +33,6 @@ it('should accept a complex query', function() {
     ObjectID: ObjectID("5e159ba7eac34211f2252aaa"),
     ObjectId: ObjectId("5e159ba7eac34211f2252aaa"),
     Symbol: Symbol('symbol'),
-    BSONSymbol: BSONSymbol('symbol'),
     Timestamp: Timestamp(123, 456),
     ISODate: ISODate("2020-01-01 12:00:00"),
     Date: Date("2020-01-01 12:00:00")
@@ -52,7 +51,7 @@ it('should accept a complex query', function() {
       new bson.ObjectId('5e159ba7eac34211f2252aaa'),
       'test'
     ),
-    Decimal128: new bson.Decimal128(128 as any),
+    Decimal128: bson.Decimal128.fromString('128'),
     NumberDecimal: bson.Decimal128.fromString('12345'),
     Double: new bson.Double(10.1),
     Int32: new bson.Int32(10),
@@ -66,7 +65,6 @@ it('should accept a complex query', function() {
     ObjectID: new bson.ObjectID('5e159ba7eac34211f2252aaa'),
     ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     Symbol: new (bson as any).BSONSymbol('symbol'),
-    BSONSymbol: new (bson as any).BSONSymbol('symbol'),
     Timestamp: new bson.Timestamp(123, 456),
     ISODate: new Date('2020-01-01 12:00:00'),
     Date: new Date('2020-01-01 12:00:00'),
