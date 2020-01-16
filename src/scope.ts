@@ -2,7 +2,9 @@ import * as bson from 'bson';
 
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,
-  Binary: bson.Binary,
+  Binary: function(buffer: any, subType: any) {
+    return new bson.Binary(buffer, subType);
+  },
   BinData: function(t: any, d: any) {
     return new bson.Binary(Buffer.from(d, 'base64'), t);
   },
@@ -12,26 +14,54 @@ const SCOPE: { [x: string]: Function } = {
   Code: function(c: any, s: any) {
     return new bson.Code(c, s);
   },
-  DBRef: bson.DBRef,
-  Decimal128: bson.Decimal128,
+  DBRef: function(namespace: any, oid: any, db: any, fields: any) {
+    return new (bson as any).DBRef(namespace, oid, db, fields);
+  },
+  Decimal128: function(s: any) {
+    return bson.Decimal128.fromString(s);
+  },
   NumberDecimal: function(s: any) {
     return bson.Decimal128.fromString(s);
   },
-  Double: bson.Double,
-  Int32: bson.Int32,
+  Double: function(s: any) {
+    return new bson.Double(s);
+  },
+  Int32: function(i: any) {
+    return new bson.Int32(i);
+  },
   NumberInt: function(s: any) {
     return parseInt(s, 10);
   },
-  Long: bson.Long,
+  Long: function(low: any, high: any) {
+    return new bson.Long(low, high);
+  },
   NumberLong: function(v: any) {
     return bson.Long.fromNumber(v);
   },
-  Int64: bson.Long,
-  MaxKey: bson.MaxKey,
-  MinKey: bson.MinKey,
-  ObjectID: bson.ObjectID,
-  ObjectId: bson.ObjectID,
-  Symbol: bson.Symbol,
+  Int64: function(i: any) {
+    return bson.Long.fromNumber(i);
+  },
+  Map: function(arr: any) {
+    return new (bson as any).Map(arr);
+  },
+  MaxKey: function() {
+    return new bson.MaxKey();
+  },
+  MinKey: function() {
+    return new bson.MinKey();
+  },
+  ObjectID: function(i: any) {
+    return new bson.ObjectID(i);
+  },
+  ObjectId: function(i: any) {
+    return new bson.ObjectID(i);
+  },
+  BSONSymbol: function(i: any) {
+    return new (bson as any).BSONSymbol(i);
+  },
+  Symbol: function(i: any) {
+    return new (bson as any).BSONSymbol(i);
+  },
   Timestamp: function(low: any, high: any) {
     return new bson.Timestamp(low, high);
   },
