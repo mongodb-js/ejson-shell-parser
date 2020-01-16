@@ -60,11 +60,11 @@ var suite = new Benchmark.Suite();
 
 // add tests
 suite
-  .add('parseEJSON#eval', function() {
+  .add('parseEJSON', function() {
     parseEJSON(sample);
   })
-  .add('parseEJSON#walk', function() {
-    parseEJSON(sample, { evalUsingTree: true });
+  .add('parseEJSON#weak', function() {
+    parseEJSON(sample, { weakParsing: true });
   })
   .add('mongodb-query-parser#insecure', function() {
     parseFilter(sample);
