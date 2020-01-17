@@ -75,27 +75,29 @@ const binaryExpression = (node: BinaryExpression): any => {
 
 const memberExpression = (node: CallExpression): any => {
   switch (node.callee.type) {
-    case 'Identifier':
+    case 'Identifier': {
       // Handing <Constructor>() and new <Constructor>() cases
       const callee = getScopeFunction(node.callee.name);
       const args = node.arguments.map(arg => walk(arg));
       return node.type === 'NewExpression'
         ? new (callee as any)(...args)
         : callee.apply(callee, args);
-    case 'MemberExpression':
-      // If they're using a static method on a member
-      if (node.callee.object.type === 'Identifier') {
-        const callee = getMember(node.callee.object.name);
-        const property = (node.callee.property as Identifier).name;
-        const args = node.arguments.map(arg => walk(arg));
-        return callee[property].apply(callee, args);
-      } else if (node.callee.property.type === 'Identifier') {
-        const obj = walk(node.callee.object);
-        const property = node.callee.property.name;
+    }
+    case 'MemberExpression': {
+      // If they're using a static method or a member
+      const calleeThis =
+        node.callee.object.type === 'Identifier'
+          ? getMember(node.callee.object.name)
+          : walk(node.callee.object);
+      const calleeFn =
+        node.callee.property.type === 'Identifier' && node.callee.property.name;
 
-        const args = node.arguments.map(arg => walk(arg));
-        return obj[property].apply(obj, args);
-      }
+      if (!calleeFn)
+        throw new Error('Expected CallExpression property to be an identifier');
+
+      const args = node.arguments.map(arg => walk(arg));
+      return calleeThis[calleeFn].apply(calleeThis, args);
+    }
     default:
       throw new Error('Should not evaluate invalid expressions');
   }
