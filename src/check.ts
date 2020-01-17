@@ -9,16 +9,16 @@ import {
 } from 'estree';
 
 import { GLOBAL_FUNCTIONS, allowedMemberProp } from './scope';
-import { Options, DefaultOptions } from './types';
+import { Options } from './options';
 
 class Checker {
-  constructor(private options: Options = DefaultOptions) {}
+  constructor(private options: Options) {}
   /**
    * Only allow CallExpressions where the Identifier matches a whitelist of safe
    * globals, and where the arguments are themselves safe expressions
    */
   checkSafeCall = (node: BaseCallExpression) => {
-    const weakParsing = this.options.weakParsing;
+    const weakParsing = this.options.allowMembers;
 
     if (node.callee.type === 'Identifier') {
       return (

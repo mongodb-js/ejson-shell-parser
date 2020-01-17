@@ -1,6 +1,6 @@
 import * as bson from 'bson';
 import parse from '../src';
-import { Options } from '../src/types';
+import { Options, ParseMode } from '../src/options';
 
 it('should correctly parse a valid object', function() {
   expect(parse('{_id:"hello"}')).toEqual({ _id: 'hello' });
@@ -137,10 +137,36 @@ it('should not allow calling functions that do not exist', function() {
   expect(parse('{ date: require("") }')).toEqual('');
 });
 
-describe('weak parsing', function() {
+describe('Function calls', function() {
   const options: Options = {
-    weakParsing: true,
+    mode: ParseMode.Strict,
+    allowMembers: true,
   };
+
+  describe('Should deny calls if functions are not allowed', function() {
+    it('reject calls to Math', function() {
+      expect(
+        parse('{ floor: Math.floor(5.5) }', {
+          mode: ParseMode.Strict,
+          allowMembers: false,
+        })
+      ).toEqual('');
+    });
+
+    describe.each(['new Date', 'new ISODate', 'Date', 'ISODate'])(
+      'Prevent calling function calls on "%s"',
+      dateFn => {
+        it('reject calls', function() {
+          expect(
+            parse(`{ date: (${dateFn}(0)).getFullYear() }`, {
+              mode: ParseMode.Strict,
+              allowMembers: false,
+            })
+          ).toEqual('');
+        });
+      }
+    );
+  });
 
   describe('Math', function() {
     it('should allow parsing while using functions from Math', function() {
