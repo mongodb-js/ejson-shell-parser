@@ -70,6 +70,8 @@ const binaryExpression = (node: BinaryExpression): any => {
       return walk(left) in walk(right);
     case 'instanceof':
       return walk(left) instanceof walk(right);
+    default:
+      throw new Error(`Invalid BinaryExpression Provided: '${node.operator}'`);
   }
 };
 
