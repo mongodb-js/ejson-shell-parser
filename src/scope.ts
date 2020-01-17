@@ -190,7 +190,7 @@ export function getScopeFunction(key: string): Function {
   );
 }
 
-export function allowedMemberProp(member: string, property: string): boolean {
+export function isMethodWhitelisted(member: string, property: string): boolean {
   if (ALLOWED_MEMBER_EXPRESSIONS[member]) {
     const allowedMethods = ALLOWED_MEMBER_EXPRESSIONS[member].allowedMethods;
 

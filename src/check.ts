@@ -1,6 +1,6 @@
 import { Node, BaseCallExpression, Identifier } from 'estree';
 
-import { GLOBAL_FUNCTIONS, allowedMemberProp } from './scope';
+import { GLOBAL_FUNCTIONS, isMethodWhitelisted } from './scope';
 import { Options } from './options';
 
 class Checker {
@@ -23,7 +23,7 @@ class Checker {
       // If we're only referring to identifiers, we don't need to check deeply.
       if (object.type === 'Identifier' && property.type === 'Identifier') {
         return (
-          allowedMemberProp(object.name, property.name) &&
+          isMethodWhitelisted(object.name, property.name) &&
           node.arguments.every(this.checkSafeExpression)
         );
       } else if (
@@ -32,7 +32,7 @@ class Checker {
       ) {
         const callee = object.callee;
         return (
-          allowedMemberProp(callee.name, property.name) &&
+          isMethodWhitelisted(callee.name, property.name) &&
           node.arguments.every(this.checkSafeExpression)
         );
       } else {
