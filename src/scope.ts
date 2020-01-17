@@ -62,17 +62,17 @@ const SCOPE: { [x: string]: Function } = {
   Timestamp: function(low: any, high: any) {
     return new bson.Timestamp(low, high);
   },
-  ISODate: function(...s: any[]) {
+  ISODate: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
-    return new Date(...(s as []));
+    return new Date(...(args as []));
   },
-  Date: function(...s: any[]) {
+  Date: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
-    return new Date(...(s as []));
+    return new Date(...(args as []));
   },
 };
 
@@ -84,16 +84,16 @@ type AllowedMethods = { [methodName: string]: boolean };
  * Allowed Methods is allowed to be a string, which just indirects to another member.
  * (Pretty much only for ISODate to save on some boilerplate)
  */
-type MemberExpressions = {
+type ClassExpressions = {
   [member: string]: {
-    member: Object;
+    class: typeof Math | typeof Date;
     allowedMethods: AllowedMethods | string;
   };
 };
 
-const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
+const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = {
   Math: {
-    member: Math,
+    class: Math,
     allowedMethods: {
       abs: true,
       acos: true,
@@ -132,7 +132,7 @@ const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
     },
   },
   Date: {
-    member: Date,
+    class: Date,
     allowedMethods: {
       getDate: true,
       getDay: true,
@@ -174,7 +174,7 @@ const ALLOWED_MEMBER_EXPRESSIONS: MemberExpressions = {
     },
   },
   ISODate: {
-    member: Date,
+    class: Date,
     allowedMethods: 'Date',
   },
 };
@@ -191,11 +191,11 @@ export function getScopeFunction(key: string): Function {
 }
 
 export function isMethodWhitelisted(member: string, property: string): boolean {
-  if (ALLOWED_MEMBER_EXPRESSIONS[member]) {
-    const allowedMethods = ALLOWED_MEMBER_EXPRESSIONS[member].allowedMethods;
+  if (ALLOWED_CLASS_EXPRESSIONS[member]) {
+    const allowedMethods = ALLOWED_CLASS_EXPRESSIONS[member].allowedMethods;
 
     if (typeof allowedMethods === 'string') {
-      return (ALLOWED_MEMBER_EXPRESSIONS[allowedMethods]
+      return (ALLOWED_CLASS_EXPRESSIONS[allowedMethods]
         .allowedMethods as AllowedMethods)[property];
     }
     return allowedMethods[property];
@@ -204,9 +204,9 @@ export function isMethodWhitelisted(member: string, property: string): boolean {
   return false;
 }
 
-export function getMember(member: string): any {
-  if (ALLOWED_MEMBER_EXPRESSIONS[member]) {
-    return ALLOWED_MEMBER_EXPRESSIONS[member].member;
+export function getClass(member: string) {
+  if (ALLOWED_CLASS_EXPRESSIONS[member]) {
+    return ALLOWED_CLASS_EXPRESSIONS[member].class;
   }
   throw new Error(`Attempted to access member '${member}' that doesn't exist`);
 }

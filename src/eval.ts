@@ -5,7 +5,7 @@ import {
   Node,
   CallExpression,
 } from 'estree';
-import { getScopeFunction, getMember } from './scope';
+import { getScopeFunction, getClass } from './scope';
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
@@ -89,8 +89,9 @@ const memberExpression = (node: CallExpression): any => {
       // If they're using a static method or a member
       const calleeThis =
         node.callee.object.type === 'Identifier'
-          ? getMember(node.callee.object.name)
+          ? getClass(node.callee.object.name)
           : walk(node.callee.object);
+
       const calleeFn =
         node.callee.property.type === 'Identifier' && node.callee.property.name;
 
