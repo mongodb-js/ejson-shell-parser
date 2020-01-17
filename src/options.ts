@@ -5,18 +5,18 @@ export enum ParseMode {
 }
 
 const StrictOptions = {
-  allowMembers: false, // Allow function calls, ie Date.now(), Math.Max(), (new Date()).getFullYear()
+  allowMethods: false, // Allow function calls, ie Date.now(), Math.Max(), (new Date()).getFullYear()
   allowComments: false, // Allow comments (// and /* */)
 };
 
 type OptionFlags = typeof StrictOptions;
 
 const ExtendedOptions: Partial<OptionFlags> = {
-  allowMembers: true,
+  allowMethods: true,
 };
 
 const LooseOptions: OptionFlags = {
-  allowMembers: true,
+  allowMethods: true,
   allowComments: true,
 };
 

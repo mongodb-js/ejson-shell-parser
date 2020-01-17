@@ -1,12 +1,4 @@
-import {
-  Node,
-  BaseCallExpression,
-  Expression,
-  SpreadElement,
-  Pattern,
-  Identifier,
-  NewExpression,
-} from 'estree';
+import { Node, BaseCallExpression, Identifier } from 'estree';
 
 import { GLOBAL_FUNCTIONS, allowedMemberProp } from './scope';
 import { Options } from './options';
@@ -18,14 +10,14 @@ class Checker {
    * globals, and where the arguments are themselves safe expressions
    */
   checkSafeCall = (node: BaseCallExpression) => {
-    const weakParsing = this.options.allowMembers;
+    const allowMethods = this.options.allowMethods;
 
     if (node.callee.type === 'Identifier') {
       return (
         GLOBAL_FUNCTIONS.indexOf(node.callee.name) >= 0 &&
         node.arguments.every(this.checkSafeExpression)
       );
-    } else if (node.callee.type === 'MemberExpression' && weakParsing) {
+    } else if (node.callee.type === 'MemberExpression' && allowMethods) {
       const object = node.callee.object;
       const property = node.callee.property as Identifier;
       // If we're only referring to identifiers, we don't need to check deeply.
@@ -45,7 +37,7 @@ class Checker {
         );
       } else {
         return (
-          this.checkSafeExpression(object as Expression) &&
+          this.checkSafeExpression(object) &&
           node.arguments.every(this.checkSafeExpression)
         );
       }
@@ -57,9 +49,7 @@ class Checker {
    * Only allow an arbitrarily selected list of 'safe' expressions to be used as
    * part of a query
    */
-  checkSafeExpression = (
-    node: Expression | SpreadElement | Pattern
-  ): boolean => {
+  checkSafeExpression = (node: Node): boolean => {
     switch (node.type) {
       case 'Literal':
         return true;

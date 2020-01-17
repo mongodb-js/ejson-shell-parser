@@ -140,7 +140,7 @@ it('should not allow calling functions that do not exist', function() {
 describe('Function calls', function() {
   const options: Options = {
     mode: ParseMode.Strict,
-    allowMembers: true,
+    allowMethods: true,
   };
 
   describe('Should deny calls if functions are not allowed', function() {
@@ -148,7 +148,7 @@ describe('Function calls', function() {
       expect(
         parse('{ floor: Math.floor(5.5) }', {
           mode: ParseMode.Strict,
-          allowMembers: false,
+          allowMethods: false,
         })
       ).toEqual('');
     });
@@ -160,7 +160,7 @@ describe('Function calls', function() {
           expect(
             parse(`{ date: (${dateFn}(0)).getFullYear() }`, {
               mode: ParseMode.Strict,
-              allowMembers: false,
+              allowMethods: false,
             })
           ).toEqual('');
         });
