@@ -35,10 +35,10 @@ class Checker {
           node.arguments.every(this.checkSafeExpression)
         );
       } else if (
-        object.type === 'NewExpression' ||
-        object.type === 'CallExpression'
+        (object.type === 'NewExpression' || object.type === 'CallExpression') &&
+        object.callee.type === 'Identifier'
       ) {
-        const callee = object.callee as Identifier;
+        const callee = object.callee;
         return (
           allowedMemberProp(callee.name, property.name) &&
           node.arguments.every(this.checkSafeExpression)
