@@ -66,13 +66,13 @@ const SCOPE: { [x: string]: Function } = {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
-    return s === undefined ? new Date() : new Date(...(s as []));
+    return new Date(...(s as []));
   },
   Date: function(...s: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
-    return s === undefined ? new Date() : new Date(...(s as []));
+    return new Date(...(s as []));
   },
 };
 
