@@ -17,29 +17,33 @@ class Checker {
         GLOBAL_FUNCTIONS.indexOf(node.callee.name) >= 0 &&
         node.arguments.every(this.checkSafeExpression)
       );
-    } else if (node.callee.type === 'MemberExpression' && allowMethods) {
-      const object = node.callee.object;
-      const property = node.callee.property as Identifier;
-      // If we're only referring to identifiers, we don't need to check deeply.
-      if (object.type === 'Identifier' && property.type === 'Identifier') {
-        return (
-          isMethodWhitelisted(object.name, property.name) &&
-          node.arguments.every(this.checkSafeExpression)
-        );
-      } else if (
-        (object.type === 'NewExpression' || object.type === 'CallExpression') &&
-        object.callee.type === 'Identifier'
-      ) {
-        const callee = object.callee;
-        return (
-          isMethodWhitelisted(callee.name, property.name) &&
-          node.arguments.every(this.checkSafeExpression)
-        );
-      } else {
-        return (
-          this.checkSafeExpression(object) &&
-          node.arguments.every(this.checkSafeExpression)
-        );
+    }
+    if (allowMethods) {
+      if (node.callee.type === 'MemberExpression') {
+        const object = node.callee.object;
+        const property = node.callee.property as Identifier;
+        // If we're only referring to identifiers, we don't need to check deeply.
+        if (object.type === 'Identifier' && property.type === 'Identifier') {
+          return (
+            isMethodWhitelisted(object.name, property.name) &&
+            node.arguments.every(this.checkSafeExpression)
+          );
+        } else if (
+          (object.type === 'NewExpression' ||
+            object.type === 'CallExpression') &&
+          object.callee.type === 'Identifier'
+        ) {
+          const callee = object.callee;
+          return (
+            isMethodWhitelisted(callee.name, property.name) &&
+            node.arguments.every(this.checkSafeExpression)
+          );
+        } else {
+          return (
+            this.checkSafeExpression(object) &&
+            node.arguments.every(this.checkSafeExpression)
+          );
+        }
       }
     }
     return false;
