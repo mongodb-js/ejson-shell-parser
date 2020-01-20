@@ -81,9 +81,7 @@ const memberExpression = (node: CallExpression): any => {
       // Handing <Constructor>() and new <Constructor>() cases
       const callee = getScopeFunction(node.callee.name);
       const args = node.arguments.map(arg => walk(arg));
-      return node.type === 'NewExpression'
-        ? new (callee as any)(...args)
-        : callee.apply(callee, args);
+      return callee.apply(callee, args);
     }
     case 'MemberExpression': {
       // If they're using a static method or a member
