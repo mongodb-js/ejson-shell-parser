@@ -12,12 +12,14 @@ function buildAST(input: string, onComment: any): Node {
 export default function parse(input: string, options?: Options) {
   const wrapped = `(${input})`;
 
+  const parsedOptions = buildOptions(options);
+
   let hasComments = false;
   const ast = buildAST(wrapped, () => (hasComments = true));
 
-  const passedCommentsCheck = !hasComments || options?.allowComments;
+  const passedCommentsCheck = !hasComments || parsedOptions.allowComments;
 
-  if (passedCommentsCheck && checkTree(ast, buildOptions(options))) {
+  if (passedCommentsCheck && checkTree(ast, parsedOptions)) {
     return executeAST(ast);
   }
   return '';
