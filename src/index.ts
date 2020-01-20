@@ -1,84 +1,33 @@
 import { parse as parseAST } from 'acorn';
-import {
-  Node,
-  BaseCallExpression,
-  Expression,
-  SpreadElement,
-  Pattern
-} from "estree";
-import { GLOBAL_FUNCTIONS, evalWithScope} from './scope';
+import { Node } from 'estree';
+
+import { checkTree } from './check';
 import { executeAST } from './eval';
+import { Options, buildOptions } from './options';
 
-function buildAST(input: string): Node {
-  return parseAST(input, { ecmaVersion: 5 }) as Node;
+function buildAST(input: string): { ast: Node; hasComments: boolean } {
+  let hasComments = false;
+
+  const ast = parseAST(input, {
+    ecmaVersion: 5,
+    onComment: () => (hasComments = true),
+  }) as Node;
+
+  return {
+    ast,
+    hasComments,
+  };
 }
 
-/**
- * Only allow CallExpressions where the Identifier matches a whitelist of safe
- * globals, and where the arguments are themselves safe expressions
- */
-const checkSafeCall = (node: BaseCallExpression) => {
-  if (node.callee.type === "Identifier") {
-    return (
-      GLOBAL_FUNCTIONS.indexOf(node.callee.name) >= 0 &&
-      node.arguments.every(checkSafeExpression)
-    );
-  }
-  return false;
-};
+export default function parse(input: string, options?: Partial<Options>) {
+  const parsedOptions = buildOptions(options);
 
-/**
- * Only allow an arbitrarily selected list of 'safe' expressions to be used as
- * part of a query
- */
-const checkSafeExpression = (
-  node: Expression | SpreadElement | Pattern
-): boolean => {
-  switch (node.type) {
-    case "Literal":
-      return true;
-    case "ArrayExpression":
-      return node.elements.every(checkSafeExpression);
-    case "UnaryExpression":
-      // Note: this does allow using the `delete`, `typeof`, and `void` operators
-      return checkSafeExpression(node.argument);
-    case "BinaryExpression":
-      // Note: this does allow using the `instanceof`, `in`, and bitwise operators
-      return checkSafeExpression(node.left) && checkSafeExpression(node.right);
-    case "CallExpression":
-    case "NewExpression":
-      // allows both `new Date(...)` and `Date(...)` function calls
-      return checkSafeCall(node);
-    case "ObjectExpression":
-      return node.properties.every((property) => {
-        // don't allow computed values { [10 + 10]: ... }
-        // don't allow method properties { start() {...} }
-        if (property.computed || property.method) return false;
-        // only allow literals { 10: ...} or identifiers { name: ... } as keys
-        if (!['Literal', 'Identifier'].includes(property.key.type)) return false;
+  const { hasComments, ast } = buildAST(`(${input})`);
 
-        // object values can be any safe expression
-        return checkSafeExpression(property.value)
-      });
-    default:
-      return false;
-  }
-};
+  const passedCommentsCheck = !hasComments || parsedOptions.allowComments;
 
-const checkTree = (node: Node) => {
-  if (node.type === 'Program') {
-    if (node.body.length === 1 && node.body[0].type === 'ExpressionStatement') {
-      return checkSafeExpression(node.body[0].expression);
-    }
-  }
-  return false;
-}
-
-export default function parse(input: string, options: { evalUsingTree: boolean } = { evalUsingTree: true, }) {
-  const wrapped = `(${input})`;
-  const ast = buildAST(wrapped);
-  if (checkTree(ast)) {
-    return options.evalUsingTree ? executeAST(ast) : evalWithScope(wrapped);
+  if (passedCommentsCheck && checkTree(ast, parsedOptions)) {
+    return executeAST(ast);
   }
   return '';
 }

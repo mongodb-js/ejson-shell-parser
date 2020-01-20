@@ -12,25 +12,31 @@
   ],
   "scripts": {
     "build": "preconstruct build",
-    "dev": "microbundle dev",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'"
   },
+  "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "acorn": "^7.1.0"
   },
   "peerDependencies": {
-    "bson": "^1.0.9"
+    "bson": "^4.0.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
     "@babel/preset-typescript": "^7.7.7",
     "@preconstruct/cli": "^1.1.4",
-    "@types/bson": "^1.0.9",
+    "@types/bson": "^4.0.1",
     "@types/estree": "^0.0.41",
     "@types/jest": "^24.0.25",
     "benchmark": "^2.1.4",
-    "bson": "^1.0.9",
+    "bson": "^4.0.3",
     "jest": "^24.9.0",
-    "mongodb-query-parser": "^1.4.3",
+    "mongodb-query-parser": "~1.5.0",
+    "prettier": "^1.19.1",
     "ts-jest": "^24.3.0",
     "typescript": "^3.7.4"
   },
