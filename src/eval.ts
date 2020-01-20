@@ -5,7 +5,7 @@ import {
   Node,
   CallExpression,
 } from 'estree';
-import { getScopeFunction, getClass } from './scope';
+import { getScopeFunction, getClass, GLOBALS } from './scope';
 
 const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
@@ -106,6 +106,11 @@ const memberExpression = (node: CallExpression): any => {
 
 const walk = (node: Node): any => {
   switch (node.type) {
+    case 'Identifier':
+      if (GLOBALS.hasOwnProperty(node.name)) {
+        return GLOBALS[node.name];
+      }
+      throw new Error(`${node.name} is not a valid Identifier`);
     case 'Literal':
       return node.value;
     case 'UnaryExpression':

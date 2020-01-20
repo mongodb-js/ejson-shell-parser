@@ -10,6 +10,21 @@ it('should accept an empty object', function() {
   expect(parse('{ }')).toEqual({});
 });
 
+it('should parse special globals / values', function() {
+  const input = `{
+    infinity: Infinity,
+    NaN: NaN,
+    undefined: undefined,
+    null: null
+  }`;
+  expect(parse(input)).toEqual({
+    infinity: Infinity,
+    NaN: NaN,
+    undefined: undefined,
+    null: null,
+  });
+});
+
 it('should accept a complex query', function() {
   expect(
     parse(`{

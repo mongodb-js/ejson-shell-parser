@@ -76,6 +76,12 @@ const SCOPE: { [x: string]: Function } = {
   },
 };
 
+export const GLOBALS: { [x: string]: any } = Object.freeze({
+  Infinity: Infinity,
+  NaN: NaN,
+  undefined: undefined,
+});
+
 type AllowedMethods = { [methodName: string]: boolean };
 
 /**

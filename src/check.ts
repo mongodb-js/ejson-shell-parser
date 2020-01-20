@@ -1,6 +1,6 @@
 import { Node, BaseCallExpression, Identifier } from 'estree';
 
-import { GLOBAL_FUNCTIONS, isMethodWhitelisted } from './scope';
+import { GLOBAL_FUNCTIONS, isMethodWhitelisted, GLOBALS } from './scope';
 import { Options } from './options';
 
 class Checker {
@@ -51,6 +51,8 @@ class Checker {
    */
   checkSafeExpression = (node: Node): boolean => {
     switch (node.type) {
+      case 'Identifier':
+        return GLOBALS.hasOwnProperty(node.name);
       case 'Literal':
         return true;
       case 'ArrayExpression':
