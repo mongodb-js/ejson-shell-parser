@@ -380,6 +380,31 @@ describe('Function calls', function() {
   });
 });
 
+describe('Comments', function() {
+  const options: Options = {
+    mode: ParseMode.Strict,
+    allowComments: true,
+  };
+
+  const input = `{
+    this: 'is', // a test
+    to: 'see' /* if comments work as expected */
+  }`;
+
+  it('should disallow comment mode if turned off', function() {
+    const noCommentOption = { mode: ParseMode.Strict, allowComments: false };
+
+    expect(parse(input, noCommentOption)).toEqual('');
+  });
+
+  it('should allow // and /* */ comments', function() {
+    expect(parse(input, options)).toEqual({
+      this: 'is',
+      to: 'see',
+    });
+  });
+});
+
 it('should not allow calling IIFE', function() {
   expect(parse('{ date: (function() { return "10"; })() }')).toEqual('');
 });
