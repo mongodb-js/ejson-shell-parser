@@ -33,17 +33,17 @@ function getModeOptions(mode: ParseMode): Partial<OptionFlags> {
 
 export type Options = {
   mode: ParseMode;
-} & Partial<OptionFlags>;
+} & OptionFlags;
 
 const DefaultOptions: Options = {
-  mode: ParseMode.Loose,
+  mode: ParseMode.Strict,
   ...LooseOptions,
 };
 
-export function buildOptions(options?: Options) {
+export function buildOptions(options?: Partial<Options>): Options {
   return {
     ...DefaultOptions,
-    ...getModeOptions((options && options.mode) || ParseMode.Loose),
+    ...getModeOptions((options && options.mode) || ParseMode.Strict),
     ...options,
   };
 }

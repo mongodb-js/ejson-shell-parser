@@ -153,7 +153,7 @@ it('should not allow calling functions that do not exist', function() {
 });
 
 describe('Function calls', function() {
-  const options: Options = {
+  const options: Partial<Options> = {
     mode: ParseMode.Strict,
     allowMethods: true,
   };
@@ -396,7 +396,7 @@ describe('Function calls', function() {
 });
 
 describe('Comments', function() {
-  const options: Options = {
+  const options: Partial<Options> = {
     mode: ParseMode.Strict,
     allowComments: true,
   };
