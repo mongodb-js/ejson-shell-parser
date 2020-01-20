@@ -37,7 +37,7 @@ export type Options = {
 
 const DefaultOptions: Options = {
   mode: ParseMode.Strict,
-  ...LooseOptions,
+  ...StrictOptions,
 };
 
 export function buildOptions(options?: Partial<Options>): Options {

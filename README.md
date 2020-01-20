@@ -9,21 +9,22 @@ This library creates an AST from the proposed input, and then traverses this AST
 
 This library currently supports three different modes for parsing queries:
 
-**loose**: [default] Supports calling methods on Math, Date and ISODate, and allows comments
+**strict**: [default] Disallows comments and calling methods
 
 ```javascript
 import parse from 'ejson-shell-parser';
 
 const query = parse(
   `{
-    _id: ObjectID("132323"), // a helpful comment
-    simpleCalc: Math.max(1,2,3) * Math.min(4,3,2)
+    _id: ObjectID("132323"),
+    simpleCalc: 6,
+    date: new Date(1578974885017)
   }`,
-  { mode: 'loose' }
+  { mode: 'strict' }
 );
 
 /*
-  query = { _id: ObjectID("132323"), simpleCalc: 6 }
+  query = { _id: ObjectID("132323"), simpleCalc: 6, date: Date('1578974885017') }
 */
 ```
 
@@ -45,22 +46,21 @@ const query = parse(
 */
 ```
 
-**strict**: Disallows comments and calling methods
+**loose**: Supports calling methods on Math, Date and ISODate, allows comments
 
 ```javascript
 import parse from 'ejson-shell-parser';
 
 const query = parse(
   `{
-    _id: ObjectID("132323"),
-    simpleCalc: 6,
-    date: new Date(1578974885017)
+    _id: ObjectID("132323"), // a helpful comment
+    simpleCalc: Math.max(1,2,3) * Math.min(4,3,2)
   }`,
-  { mode: 'strict' }
+  { mode: 'loose' }
 );
 
 /*
-  query = { _id: ObjectID("132323"), simpleCalc: 6, date: Date('1578974885017') }
+  query = { _id: ObjectID("132323"), simpleCalc: 6 }
 */
 ```
 
