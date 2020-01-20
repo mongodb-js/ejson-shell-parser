@@ -1,7 +1,5 @@
 # ejson-shell-parser
 
-**Currently not published to NPM**
-
 Parses valid MongoDB EJSON Shell queries.
 This library does not validate that these queries are correct. It's focus is on parsing untrusted input. You may wish to use something like https://github.com/mongodb-js/mongodb-language-model to achieve this.
 
