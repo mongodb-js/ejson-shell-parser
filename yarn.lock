@@ -3659,7 +3659,7 @@ mongodb-language-model@^1.6.0:
   resolved "https://registry.yarnpkg.com/mongodb-language-model/-/mongodb-language-model-1.6.0.tgz#0deb9a247882a0b752e29dee6a0fd9d832b6100e"
   integrity sha512-Nb31lm2KhJin0AUvJhsdrnv8yfs6H0I2pOFgUfuZThGfeRr3V8IndxBxW8SEhOmJ1v42BVMWL6xMHbefVwjyHg==
 
-mongodb-query-parser@^1.5.0:
+mongodb-query-parser@~1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/mongodb-query-parser/-/mongodb-query-parser-1.5.0.tgz#a3827178f36d29375987f6e834abd4ead8ca773f"
   integrity sha512-45Vp5Qh8pQusHeSN3mpFqukIB6XoJ/ASeHN7x2+kZl7DR4t1W7vftlIqPsNvs0kEKuslHUQRwd9ZDHXSvNpsiw==
