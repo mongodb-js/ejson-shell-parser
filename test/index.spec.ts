@@ -383,3 +383,9 @@ describe('Function calls', function() {
 it('should not allow calling IIFE', function() {
   expect(parse('{ date: (function() { return "10"; })() }')).toEqual('');
 });
+
+it('should prevent attempting to break the sandbox', function() {
+  const input =
+    "{ exploit: clearImmediate.constructor('return process;')().exit(1) }";
+  expect(parse(input)).toEqual('');
+});
