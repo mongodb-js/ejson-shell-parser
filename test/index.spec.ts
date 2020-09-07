@@ -430,7 +430,7 @@ it('should prevent attempting to break the sandbox', function() {
   expect(parse(input)).toEqual('');
 });
 
-it('should parse correctly NumberLong > Number.MAX_SAFE_INTEGER', function() {
+it('should correctly parse NumberLong and Int64 bigger than Number.MAX_SAFE_INTEGER', function() {
   expect(
     parse("{ n: NumberLong('345678654321234552') }"
   ).n.toString()).toEqual('345678654321234552');
