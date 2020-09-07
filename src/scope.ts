@@ -1,5 +1,13 @@
 import * as bson from 'bson';
 
+function NumberLong(v: any) {
+  if (typeof v === 'string') {
+    return bson.Long.fromString(v);
+  } else {
+    return bson.Long.fromNumber(v);
+  }
+}
+
 const SCOPE: { [x: string]: Function } = {
   RegExp: RegExp,
   Binary: function(buffer: any, subType: any) {
@@ -35,12 +43,8 @@ const SCOPE: { [x: string]: Function } = {
   Long: function(low: any, high: any) {
     return new bson.Long(low, high);
   },
-  NumberLong: function(v: any) {
-    return bson.Long.fromNumber(v);
-  },
-  Int64: function(i: any) {
-    return bson.Long.fromNumber(i);
-  },
+  NumberLong: NumberLong,
+  Int64: NumberLong,
   Map: function(arr: any) {
     return new (bson as any).Map(arr);
   },
