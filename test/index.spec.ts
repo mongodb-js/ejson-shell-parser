@@ -429,3 +429,13 @@ it('should prevent attempting to break the sandbox', function() {
     "{ exploit: clearImmediate.constructor('return process;')().exit(1) }";
   expect(parse(input)).toEqual('');
 });
+
+it('should correctly parse NumberLong and Int64 bigger than Number.MAX_SAFE_INTEGER', function() {
+  expect(
+    parse("{ n: NumberLong('345678654321234552') }"
+  ).n.toString()).toEqual('345678654321234552');
+
+  expect(
+    parse("{ n: Int64('345678654321234552') }"
+  ).n.toString()).toEqual('345678654321234552');
+});
