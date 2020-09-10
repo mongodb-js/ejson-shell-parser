@@ -1,6 +1,6 @@
 {
   "name": "ejson-shell-parser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/ejson-shell-parser.cjs.js",
   "module": "dist/ejson-shell-parser.esm.js",
   "umd:main": "dist/ejson-shell-parser.umd.min.js",
