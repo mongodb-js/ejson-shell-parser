@@ -273,12 +273,40 @@ describe('Function calls', function() {
   });
 
   describe('Functions', () => {
-    it('Should allow $where functions', function() {
+    it('Should allow functions as object properties', function() {
       expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
         {
           $where: 'function() { this.x = 1 }'
         }
       );
+    });
+
+    it('Should allow multiline functions', function() {
+      expect(parse('{ $where: function\n()\n{\nthis.x = 1\n}}', options)).toEqual(
+        {
+          $where: 'function\n()\n{\nthis.x = 1\n}'
+        }
+      );
+    });
+
+    it('Should allow $expr queries', function() {
+      expect(parse(`{
+        $expr: {
+          $function: {
+            body: function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; },
+            args: [ "$name" ],
+            lang: "js"
+          }
+        }
+      }`)).toEqual({
+        $expr: {
+          $function: {
+            body: 'function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; }',
+            args: [ "$name" ],
+            lang: "js"
+          }
+        }
+      });
     });
   });
 
