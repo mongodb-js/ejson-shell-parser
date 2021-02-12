@@ -1,7 +1,6 @@
 import {
   UnaryExpression,
   BinaryExpression,
-  FunctionExpression,
   Node,
   CallExpression,
 } from 'estree';
