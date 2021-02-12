@@ -273,7 +273,7 @@ describe('Function calls', function() {
   });
 
   describe('Functions', () => {
-    it('Should allow functions as object properties', function() {
+    it('should allow functions as object properties', function() {
       expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
         {
           $where: 'function() { this.x = 1 }'
@@ -281,7 +281,7 @@ describe('Function calls', function() {
       );
     });
 
-    it('Should allow multiline functions', function() {
+    it('should allow multiline functions', function() {
       expect(parse('{ $where: function\n()\n{\nthis.x = 1\n}}', options)).toEqual(
         {
           $where: 'function\n()\n{\nthis.x = 1\n}'
@@ -289,7 +289,7 @@ describe('Function calls', function() {
       );
     });
 
-    it('Should allow $expr queries', function() {
+    it('should allow $expr queries', function() {
       expect(parse(`{
         $expr: {
           $function: {
