@@ -272,7 +272,7 @@ describe('Function calls', function() {
     });
   });
 
-  describe.only('Functions', () => {
+  describe('Functions', () => {
     it('Should allow $where functions', function() {
       expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
         {
