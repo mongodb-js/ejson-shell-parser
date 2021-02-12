@@ -272,6 +272,16 @@ describe('Function calls', function() {
     });
   });
 
+  describe.only('Functions', () => {
+    it('Should allow $where functions', function() {
+      expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
+        {
+          $where: 'function() { this.x = 1 }'
+        }
+      );
+    });
+  });
+
   describe('Date', function() {
     it('should allow calling .now()', function() {
       const dateSpy = jest.spyOn(Date, 'now');

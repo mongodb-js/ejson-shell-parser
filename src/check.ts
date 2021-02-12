@@ -86,6 +86,8 @@ class Checker {
           // object values can be any safe expression
           return this.checkSafeExpression(property.value);
         });
+      case 'FunctionExpression':
+        return true;
       default:
         return false;
     }

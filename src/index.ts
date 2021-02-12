@@ -27,7 +27,7 @@ export default function parse(input: string, options?: Partial<Options>) {
   const passedCommentsCheck = !hasComments || parsedOptions.allowComments;
 
   if (passedCommentsCheck && checkTree(ast, parsedOptions)) {
-    return executeAST(ast);
+    return executeAST(ast, input);
   }
   return '';
 }
