@@ -3,83 +3,84 @@ import {
   BinaryExpression,
   Node,
   CallExpression,
+  FunctionExpression,
 } from 'estree';
 import { getScopeFunction, getClass, GLOBALS } from './scope';
 
-const unaryExpression = (node: UnaryExpression, source: string): any => {
+const unaryExpression = (node: UnaryExpression): any => {
   if (!node.prefix) throw new Error('Malformed UnaryExpression');
   switch (node.operator) {
     case '-':
-      return -walk(node.argument, source);
+      return -walk(node.argument);
     case '+':
-      return +walk(node.argument, source);
+      return +walk(node.argument);
     case '!':
-      return !walk(node.argument, source);
+      return !walk(node.argument);
     case '~':
-      return ~walk(node.argument, source);
+      return ~walk(node.argument);
     default:
       throw new Error(`Invalid UnaryExpression Provided: '${node.operator}'`);
   }
 };
 
-const binaryExpression = (node: BinaryExpression, source: string): any => {
+const binaryExpression = (node: BinaryExpression): any => {
   const { left, right } = node;
   switch (node.operator) {
     case '==':
-      return walk(left, source) == walk(right, source);
+      return walk(left) == walk(right);
     case '!=':
-      return walk(left, source) != walk(right, source);
+      return walk(left) != walk(right);
     case '===':
-      return walk(left, source) === walk(right, source);
+      return walk(left) === walk(right);
     case '!==':
-      return walk(left, source) !== walk(right, source);
+      return walk(left) !== walk(right);
     case '<':
-      return walk(left, source) < walk(right, source);
+      return walk(left) < walk(right);
     case '<=':
-      return walk(left, source) <= walk(right, source);
+      return walk(left) <= walk(right);
     case '>':
-      return walk(left, source) > walk(right, source);
+      return walk(left) > walk(right);
     case '>=':
-      return walk(left, source) >= walk(right, source);
+      return walk(left) >= walk(right);
     case '<<':
-      return walk(left, source) << walk(right, source);
+      return walk(left) << walk(right);
     case '>>':
-      return walk(left, source) >> walk(right, source);
+      return walk(left) >> walk(right);
     case '>>>':
-      return walk(left, source) >>> walk(right, source);
+      return walk(left) >>> walk(right);
     case '+':
-      return walk(left, source) + walk(right, source);
+      return walk(left) + walk(right);
     case '-':
-      return walk(left, source) - walk(right, source);
+      return walk(left) - walk(right);
     case '*':
-      return walk(left, source) * walk(right, source);
+      return walk(left) * walk(right);
     case '/':
-      return walk(left, source) / walk(right, source);
+      return walk(left) / walk(right);
     case '%':
-      return walk(left, source) % walk(right, source);
+      return walk(left) % walk(right);
     case '**':
-      return walk(left, source) ** walk(right, source);
+      return walk(left) ** walk(right);
     case '|':
-      return walk(left, source) | walk(right, source);
+      return walk(left) | walk(right);
     case '^':
-      return walk(left, source) ^ walk(right, source);
+      return walk(left) ^ walk(right);
     case '&':
-      return walk(left, source) & walk(right, source);
+      return walk(left) & walk(right);
     case 'in':
-      return walk(left, source) in walk(right, source);
+      return walk(left) in walk(right);
     case 'instanceof':
-      return walk(left, source) instanceof walk(right, source);
+      return walk(left) instanceof walk(right);
     default:
       throw new Error(`Invalid BinaryExpression Provided: '${node.operator}'`);
   }
 };
 
-const memberExpression = (node: CallExpression, source: string): any => {
+const memberExpression = (node: CallExpression): any => {
   switch (node.callee.type) {
     case 'Identifier': {
       // Handing <Constructor>() and new <Constructor>() cases
       const callee = getScopeFunction(node.callee.name);
-      const args = node.arguments.map(arg => walk(arg, source));
+      const args = node.arguments.map(arg => walk(arg));
       return callee.apply(callee, args);
     }
     case 'MemberExpression': {
@@ -87,7 +88,7 @@ const memberExpression = (node: CallExpression, source: string): any => {
       const calleeThis =
         node.callee.object.type === 'Identifier'
           ? getClass(node.callee.object.name)
-          : walk(node.callee.object, source);
+          : walk(node.callee.object);
 
       const calleeFn =
         node.callee.property.type === 'Identifier' && node.callee.property.name;
@@ -95,7 +96,7 @@ const memberExpression = (node: CallExpression, source: string): any => {
       if (!calleeFn)
         throw new Error('Expected CallExpression property to be an identifier');
 
-      const args = node.arguments.map(arg => walk(arg, source));
+      const args = node.arguments.map(arg => walk(arg));
       return calleeThis[calleeFn].apply(calleeThis, args);
     }
     default:
@@ -103,7 +104,14 @@ const memberExpression = (node: CallExpression, source: string): any => {
   }
 };
 
-const walk = (node: Node, source: string): any => {
+
+const functionExpression = (node: FunctionExpression): string => {
+  const source = node.loc?.source || '';
+  const range = node.range || [];
+  return source.slice(range[0], range[1]);
+}
+
+const walk = (node: Node): any => {
   switch (node.type) {
     case 'Identifier':
       if (GLOBALS.hasOwnProperty(node.name)) {
@@ -113,36 +121,35 @@ const walk = (node: Node, source: string): any => {
     case 'Literal':
       return node.value;
     case 'UnaryExpression':
-      return unaryExpression(node, source);
+      return unaryExpression(node);
     case 'BinaryExpression':
-      return binaryExpression(node, source);
+      return binaryExpression(node);
     case 'ArrayExpression':
-      return node.elements.map(node => walk(node, source));
+      return node.elements.map(node => walk(node));
     case 'CallExpression':
     case 'NewExpression':
-      return memberExpression(node, source);
+      return memberExpression(node);
     case 'ObjectExpression':
       const obj: { [key: string]: any } = {};
       node.properties.forEach(property => {
         const key =
           property.key.type === 'Identifier'
             ? property.key.name
-            : walk(property.key, source);
-        obj[key] = walk(property.value, source);
+            : walk(property.key);
+        obj[key] = walk(property.value);
       });
       return obj;
     case 'FunctionExpression':
-      const { start, end } = node as any;
-      return source.slice(start - 1, end - 1);
+      return functionExpression(node);
     default:
       throw new Error();
   }
 };
 
-export const executeAST = (node: Node, source: string) => {
+export const executeAST = (node: Node) => {
   if (node.type === 'Program') {
     if (node.body.length === 1 && node.body[0].type === 'ExpressionStatement') {
-      return walk(node.body[0].expression, source);
+      return walk(node.body[0].expression);
     }
   }
   throw new Error('Invalid AST Found');

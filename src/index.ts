@@ -11,6 +11,9 @@ function buildAST(input: string): { ast: Node; hasComments: boolean } {
   const ast = parseAST(input, {
     ecmaVersion: 5,
     onComment: () => (hasComments = true),
+    locations: true,
+    ranges: true,
+    sourceFile: input,
   }) as Node;
 
   return {
@@ -27,7 +30,8 @@ export default function parse(input: string, options?: Partial<Options>) {
   const passedCommentsCheck = !hasComments || parsedOptions.allowComments;
 
   if (passedCommentsCheck && checkTree(ast, parsedOptions)) {
-    return executeAST(ast, input);
+    return executeAST(ast);
   }
+
   return '';
 }
