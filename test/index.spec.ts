@@ -272,13 +272,17 @@ describe('Function calls', function() {
     });
   });
 
-  describe('Functions', () => {
+  describe('Function expressions', () => {
     it('should allow functions as object properties', function() {
       expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
         {
           $where: 'function() { this.x = 1 }'
         }
       );
+    });
+
+    it('should not allow functions outside object properties', function() {
+      expect(parse('function() { this.x = 1 }', options)).toEqual('');
     });
 
     it('should allow multiline functions', function() {
