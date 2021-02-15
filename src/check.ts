@@ -85,8 +85,9 @@ class Checker {
 
           // object values can be any safe expression
           return (
-            this.checkSafeExpression(property.value) ||
-            property.value.type === 'FunctionExpression'
+            ['FunctionExpression', 'ArrowFunctionExpression']
+              .includes(property.value.type) ||
+            this.checkSafeExpression(property.value)
           );
         });
       default:

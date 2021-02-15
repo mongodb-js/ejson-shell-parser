@@ -293,6 +293,14 @@ describe('Function calls', function() {
       );
     });
 
+    it('should allow arrow functions', function() {
+      expect(parse('{ $where: () => true }', options)).toEqual(
+        {
+          $where: '() => true'
+        }
+      );
+    });
+
     it('should allow $expr queries', function() {
       expect(parse(`{
         $expr: {

@@ -4,6 +4,7 @@ import {
   Node,
   CallExpression,
   FunctionExpression,
+  ArrowFunctionExpression,
 } from 'estree';
 import { getScopeFunction, getClass, GLOBALS } from './scope';
 
@@ -105,7 +106,7 @@ const memberExpression = (node: CallExpression): any => {
 };
 
 
-const functionExpression = (node: FunctionExpression): string => {
+const functionExpression = (node: FunctionExpression | ArrowFunctionExpression): string => {
   const source = node.loc?.source || '';
   const range = node.range || [];
   return source.slice(range[0], range[1]);
@@ -140,6 +141,7 @@ const walk = (node: Node): any => {
       });
       return obj;
     case 'FunctionExpression':
+    case 'ArrowFunctionExpression':
       return functionExpression(node);
     default:
       throw new Error();
