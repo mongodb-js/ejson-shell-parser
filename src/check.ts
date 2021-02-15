@@ -83,7 +83,7 @@ class Checker {
           if (!['Literal', 'Identifier'].includes(property.key.type))
             return false;
 
-          // object values can be any safe expression
+          // object values can be a function expression or any safe expression
           return (
             ['FunctionExpression', 'ArrowFunctionExpression']
               .includes(property.value.type) ||
