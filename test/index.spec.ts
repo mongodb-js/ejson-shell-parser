@@ -272,6 +272,56 @@ describe('Function calls', function() {
     });
   });
 
+  describe('Function expressions', () => {
+    it('should allow functions as object properties', function() {
+      expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
+        {
+          $where: 'function() { this.x = 1 }'
+        }
+      );
+    });
+
+    it('should not allow functions outside object properties', function() {
+      expect(parse('function() { this.x = 1 }', options)).toEqual('');
+    });
+
+    it('should allow multiline functions', function() {
+      expect(parse('{ $where: function\n()\n{\nthis.x = 1\n}}', options)).toEqual(
+        {
+          $where: 'function\n()\n{\nthis.x = 1\n}'
+        }
+      );
+    });
+
+    it('should allow arrow functions', function() {
+      expect(parse('{ $where: () => true }', options)).toEqual(
+        {
+          $where: '() => true'
+        }
+      );
+    });
+
+    it('should allow $expr queries', function() {
+      expect(parse(`{
+        $expr: {
+          $function: {
+            body: function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; },
+            args: [ "$name" ],
+            lang: "js"
+          }
+        }
+      }`)).toEqual({
+        $expr: {
+          $function: {
+            body: 'function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; }',
+            args: [ "$name" ],
+            lang: "js"
+          }
+        }
+      });
+    });
+  });
+
   describe('Date', function() {
     it('should allow calling .now()', function() {
       const dateSpy = jest.spyOn(Date, 'now');
@@ -288,82 +338,83 @@ describe('Function calls', function() {
       'Date allow using member methods with "%s"',
       dateFn => {
         it('should allow member expressions', function() {
+          const isoString = '1996-02-24T23:01:59.001Z';
+          const newDate = `${dateFn}('${isoString}')`;
           const input = `{
-          getDate: (${dateFn}(1578974885017)).getDate(),
-          getDay: (${dateFn}(1578974885017)).getDay(),
-          getFullYear: (${dateFn}(1578974885017)).getFullYear(),
-          getHours: (${dateFn}(1578974885017)).getHours(),
-          getMilliseconds: (${dateFn}(1578974885017)).getMilliseconds(),
-          getMinutes: (${dateFn}(1578974885017)).getMinutes(),
-          getMonth: (${dateFn}(1578974885017)).getMonth(),
-          getSeconds: (${dateFn}(1578974885017)).getSeconds(),
-          getTime: (${dateFn}(1578974885017)).getTime(),
-          getTimezoneOffset: (${dateFn}(1578974885017)).getTimezoneOffset(),
-          getUTCDate: (${dateFn}(1578974885017)).getUTCDate(),
-          getUTCDay: (${dateFn}(1578974885017)).getUTCDay(),
-          getUTCFullYear: (${dateFn}(1578974885017)).getUTCFullYear(),
-          getUTCHours: (${dateFn}(1578974885017)).getUTCHours(),
-          getUTCMilliseconds: (${dateFn}(1578974885017)).getUTCMilliseconds(),
-          getUTCMinutes: (${dateFn}(1578974885017)).getUTCMinutes(),
-          getUTCMonth: (${dateFn}(1578974885017)).getUTCMonth(),
-          getUTCSeconds: (${dateFn}(1578974885017)).getUTCSeconds(),
-          getYear: (${dateFn}(1578974885017)).getYear(),
-          setDate: (${dateFn}(1578974885017)).setDate(24),
-          setFullYear: (${dateFn}(1578974885017)).setFullYear(2010),
-          setHours: (${dateFn}(1578974885017)).setHours(23),
-          setMilliseconds: (${dateFn}(1578974885017)).setMilliseconds(1),
-          setMinutes: (${dateFn}(1578974885017)).setMinutes(1),
-          setMonth: (${dateFn}(1578974885017)).setMonth(1),
-          setSeconds: (${dateFn}(1578974885017)).setSeconds(59),
-          setTime: (${dateFn}(1578974885017)).setTime(10),
-          setUTCDate: (${dateFn}(1578974885017)).setUTCDate(24),
-          setUTCFullYear: (${dateFn}(1578974885017)).setUTCFullYear(2010),
-          setUTCHours: (${dateFn}(1578974885017)).setUTCHours(23),
-          setUTCMilliseconds: (${dateFn}(1578974885017)).setUTCMilliseconds(1),
-          setUTCMinutes: (${dateFn}(1578974885017)).setUTCMinutes(1),
-          setUTCMonth: (${dateFn}(1578974885017)).setUTCMonth(1),
-          setUTCSeconds: (${dateFn}(1578974885017)).setUTCSeconds(59),
-          setYear: (${dateFn}(1578974885017)).setYear(96),
-          toISOString: (${dateFn}(1578974885017)).toISOString(),
+          getDate: (${newDate}).getDate(),
+          getDay: (${newDate}).getDay(),
+          getFullYear: (${newDate}).getFullYear(),
+          getHours: (${newDate}).getHours(),
+          getMilliseconds: (${newDate}).getMilliseconds(),
+          getMinutes: (${newDate}).getMinutes(),
+          getMonth: (${newDate}).getMonth(),
+          getSeconds: (${newDate}).getSeconds(),
+          getTime: (${newDate}).getTime(),
+          getTimezoneOffset: (${newDate}).getTimezoneOffset(),
+          getUTCDate: (${newDate}).getUTCDate(),
+          getUTCDay: (${newDate}).getUTCDay(),
+          getUTCFullYear: (${newDate}).getUTCFullYear(),
+          getUTCHours: (${newDate}).getUTCHours(),
+          getUTCMilliseconds: (${newDate}).getUTCMilliseconds(),
+          getUTCMinutes: (${newDate}).getUTCMinutes(),
+          getUTCMonth: (${newDate}).getUTCMonth(),
+          getUTCSeconds: (${newDate}).getUTCSeconds(),
+          getYear: (${newDate}).getYear(),
+          setDate: (${newDate}).setDate(24),
+          setFullYear: (${newDate}).setFullYear(2010),
+          setHours: (${newDate}).setHours(23),
+          setMilliseconds: (${newDate}).setMilliseconds(1),
+          setMinutes: (${newDate}).setMinutes(1),
+          setMonth: (${newDate}).setMonth(1),
+          setSeconds: (${newDate}).setSeconds(59),
+          setTime: (${newDate}).setTime(10),
+          setUTCDate: (${newDate}).setUTCDate(24),
+          setUTCFullYear: (${newDate}).setUTCFullYear(2010),
+          setUTCHours: (${newDate}).setUTCHours(23),
+          setUTCMilliseconds: (${newDate}).setUTCMilliseconds(1),
+          setUTCMinutes: (${newDate}).setUTCMinutes(1),
+          setUTCMonth: (${newDate}).setUTCMonth(1),
+          setUTCSeconds: (${newDate}).setUTCSeconds(59),
+          setYear: (${newDate}).setYear(96),
+          toISOString: (${newDate}).toISOString(),
        }`;
-
           expect(parse(input, options)).toEqual({
-            getDate: 14,
-            getDay: 2,
-            getFullYear: 2020,
-            getHours: 15,
-            getMilliseconds: 17,
-            getMinutes: 8,
-            getMonth: 0,
-            getSeconds: 5,
-            getTime: 1578974885017,
-            getTimezoneOffset: -660,
-            getUTCDate: 14,
-            getUTCDay: 2,
-            getUTCFullYear: 2020,
-            getUTCHours: 4,
-            getUTCMilliseconds: 17,
-            getUTCMinutes: 8,
-            getUTCMonth: 0,
-            getUTCSeconds: 5,
-            getYear: 120,
-            setDate: 1579838885017,
-            setFullYear: 1263442085017,
-            setHours: 1579003685017,
-            setMilliseconds: 1578974885001,
-            setMinutes: 1578974465017,
-            setMonth: 1581653285017,
-            setSeconds: 1578974939017,
-            setTime: 10,
-            setUTCDate: 1579838885017,
-            setUTCFullYear: 1263442085017,
-            setUTCHours: 1579043285017,
-            setUTCMilliseconds: 1578974885001,
-            setUTCMinutes: 1578974465017,
-            setUTCMonth: 1581653285017,
-            setUTCSeconds: 1578974939017,
-            setYear: 821592485017,
-            toISOString: '2020-01-14T04:08:05.017Z',
+            getDate: (new Date(isoString)).getDate(),
+            getDay: (new Date(isoString)).getDay(),
+            getFullYear: (new Date(isoString)).getFullYear(),
+            getHours: (new Date(isoString)).getHours(),
+            getMilliseconds: (new Date(isoString)).getMilliseconds(),
+            getMinutes: (new Date(isoString)).getMinutes(),
+            getMonth: (new Date(isoString)).getMonth(),
+            getSeconds: (new Date(isoString)).getSeconds(),
+            getTime: (new Date(isoString)).getTime(),
+            getTimezoneOffset: (new Date(isoString)).getTimezoneOffset(),
+            getUTCDate: (new Date(isoString)).getUTCDate(),
+            getUTCDay: (new Date(isoString)).getUTCDay(),
+            getUTCFullYear: (new Date(isoString)).getUTCFullYear(),
+            getUTCHours: (new Date(isoString)).getUTCHours(),
+            getUTCMilliseconds: (new Date(isoString)).getUTCMilliseconds(),
+            getUTCMinutes: (new Date(isoString)).getUTCMinutes(),
+            getUTCMonth: (new Date(isoString)).getUTCMonth(),
+            getUTCSeconds: (new Date(isoString)).getUTCSeconds(),
+            getYear: (new Date(isoString) as any).getYear(), // getYear is deprecated
+            setDate: (new Date(isoString)).setDate(24),
+            setFullYear: (new Date(isoString)).setFullYear(2010),
+            setHours: (new Date(isoString)).setHours(23),
+            setMilliseconds: (new Date(isoString)).setMilliseconds(1),
+            setMinutes: (new Date(isoString)).setMinutes(1),
+            setMonth: (new Date(isoString)).setMonth(1),
+            setSeconds: (new Date(isoString)).setSeconds(59),
+            setTime: (new Date(isoString)).setTime(10),
+            setUTCDate: (new Date(isoString)).setUTCDate(24),
+            setUTCFullYear: (new Date(isoString)).setUTCFullYear(2010),
+            setUTCHours: (new Date(isoString)).setUTCHours(23),
+            setUTCMilliseconds: (new Date(isoString)).setUTCMilliseconds(1),
+            setUTCMinutes: (new Date(isoString)).setUTCMinutes(1),
+            setUTCMonth: (new Date(isoString)).setUTCMonth(1),
+            setUTCSeconds: (new Date(isoString)).setUTCSeconds(59),
+            setYear: (new Date(isoString) as any).setYear(96), // setYear is deprecated
+            toISOString: (new Date(isoString)).toISOString(),
           });
         });
 
