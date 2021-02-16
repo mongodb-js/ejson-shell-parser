@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "preconstruct build",
+    "sanity": "prettier -c '**/*.{js,jsx,ts,less,html,md,yml}' && yarn build",
     "test": "jest",
     "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'",
     "prerelease": "yarn build",
