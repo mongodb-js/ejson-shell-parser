@@ -14,6 +14,7 @@
     "build": "preconstruct build",
     "test": "jest",
     "format": "prettier --write '**/*.{js,jsx,ts,less,html,md,yml}'",
+    "prerelease": "npm run build",
     "release": "np"
   },
   "browserslist": "> 0.25%, not dead",
