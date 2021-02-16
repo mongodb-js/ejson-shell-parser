@@ -37,7 +37,9 @@
     "@types/jest": "^24.0.25",
     "benchmark": "^2.1.4",
     "bson": "^4.0.3",
+    "husky": ">=4",
     "jest": "^24.9.0",
+    "lint-staged": ">=10",
     "mongodb-query-parser": "2.1.1",
     "np": "^6.5.0",
     "prettier": "^1.19.1",
@@ -49,5 +51,13 @@
     "globals": {
       "bson": "BSON"
     }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,less,html,md,yml}": "prettier --write"
   }
 }
