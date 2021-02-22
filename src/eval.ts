@@ -105,12 +105,13 @@ const memberExpression = (node: CallExpression): any => {
   }
 };
 
-
-const functionExpression = (node: FunctionExpression | ArrowFunctionExpression): string => {
+const functionExpression = (
+  node: FunctionExpression | ArrowFunctionExpression
+): string => {
   const source = node.loc?.source || '';
   const range = node.range || [];
   return source.slice(range[0], range[1]);
-}
+};
 
 const walk = (node: Node): any => {
   switch (node.type) {

@@ -17,4 +17,7 @@ jobs:
           cmd: install --frozen-lockfile # will run `yarn install` command
       - uses: borales/actions-yarn@v2.0.0
         with:
+          cmd: sanity # will check if building works & if code is formatted well
+      - uses: borales/actions-yarn@v2.0.0
+        with:
           cmd: test # will run `yarn test` command
