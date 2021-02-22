@@ -1,0 +1,6 @@
+- match:
+    dependency_name: bson
+    update_type: semver:patch # this is exposed to the outside, so update as little as possible
+- match:
+    dependency_type: all
+    update_type: 'semver:minor' # includes patch updates

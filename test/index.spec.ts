@@ -274,11 +274,9 @@ describe('Function calls', function() {
 
   describe('Function expressions', () => {
     it('should allow functions as object properties', function() {
-      expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual(
-        {
-          $where: 'function() { this.x = 1 }'
-        }
-      );
+      expect(parse('{ $where: function() { this.x = 1 }}', options)).toEqual({
+        $where: 'function() { this.x = 1 }',
+      });
     });
 
     it('should not allow functions outside object properties', function() {
@@ -286,23 +284,22 @@ describe('Function calls', function() {
     });
 
     it('should allow multiline functions', function() {
-      expect(parse('{ $where: function\n()\n{\nthis.x = 1\n}}', options)).toEqual(
-        {
-          $where: 'function\n()\n{\nthis.x = 1\n}'
-        }
-      );
+      expect(
+        parse('{ $where: function\n()\n{\nthis.x = 1\n}}', options)
+      ).toEqual({
+        $where: 'function\n()\n{\nthis.x = 1\n}',
+      });
     });
 
     it('should allow arrow functions', function() {
-      expect(parse('{ $where: () => true }', options)).toEqual(
-        {
-          $where: '() => true'
-        }
-      );
+      expect(parse('{ $where: () => true }', options)).toEqual({
+        $where: '() => true',
+      });
     });
 
     it('should allow $expr queries', function() {
-      expect(parse(`{
+      expect(
+        parse(`{
         $expr: {
           $function: {
             body: function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; },
@@ -310,14 +307,16 @@ describe('Function calls', function() {
             lang: "js"
           }
         }
-      }`)).toEqual({
+      }`)
+      ).toEqual({
         $expr: {
           $function: {
-            body: 'function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; }',
-            args: [ "$name" ],
-            lang: "js"
-          }
-        }
+            body:
+              'function(name) { return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"; }',
+            args: ['$name'],
+            lang: 'js',
+          },
+        },
       });
     });
   });
@@ -379,42 +378,42 @@ describe('Function calls', function() {
           toISOString: (${newDate}).toISOString(),
        }`;
           expect(parse(input, options)).toEqual({
-            getDate: (new Date(isoString)).getDate(),
-            getDay: (new Date(isoString)).getDay(),
-            getFullYear: (new Date(isoString)).getFullYear(),
-            getHours: (new Date(isoString)).getHours(),
-            getMilliseconds: (new Date(isoString)).getMilliseconds(),
-            getMinutes: (new Date(isoString)).getMinutes(),
-            getMonth: (new Date(isoString)).getMonth(),
-            getSeconds: (new Date(isoString)).getSeconds(),
-            getTime: (new Date(isoString)).getTime(),
-            getTimezoneOffset: (new Date(isoString)).getTimezoneOffset(),
-            getUTCDate: (new Date(isoString)).getUTCDate(),
-            getUTCDay: (new Date(isoString)).getUTCDay(),
-            getUTCFullYear: (new Date(isoString)).getUTCFullYear(),
-            getUTCHours: (new Date(isoString)).getUTCHours(),
-            getUTCMilliseconds: (new Date(isoString)).getUTCMilliseconds(),
-            getUTCMinutes: (new Date(isoString)).getUTCMinutes(),
-            getUTCMonth: (new Date(isoString)).getUTCMonth(),
-            getUTCSeconds: (new Date(isoString)).getUTCSeconds(),
+            getDate: new Date(isoString).getDate(),
+            getDay: new Date(isoString).getDay(),
+            getFullYear: new Date(isoString).getFullYear(),
+            getHours: new Date(isoString).getHours(),
+            getMilliseconds: new Date(isoString).getMilliseconds(),
+            getMinutes: new Date(isoString).getMinutes(),
+            getMonth: new Date(isoString).getMonth(),
+            getSeconds: new Date(isoString).getSeconds(),
+            getTime: new Date(isoString).getTime(),
+            getTimezoneOffset: new Date(isoString).getTimezoneOffset(),
+            getUTCDate: new Date(isoString).getUTCDate(),
+            getUTCDay: new Date(isoString).getUTCDay(),
+            getUTCFullYear: new Date(isoString).getUTCFullYear(),
+            getUTCHours: new Date(isoString).getUTCHours(),
+            getUTCMilliseconds: new Date(isoString).getUTCMilliseconds(),
+            getUTCMinutes: new Date(isoString).getUTCMinutes(),
+            getUTCMonth: new Date(isoString).getUTCMonth(),
+            getUTCSeconds: new Date(isoString).getUTCSeconds(),
             getYear: (new Date(isoString) as any).getYear(), // getYear is deprecated
-            setDate: (new Date(isoString)).setDate(24),
-            setFullYear: (new Date(isoString)).setFullYear(2010),
-            setHours: (new Date(isoString)).setHours(23),
-            setMilliseconds: (new Date(isoString)).setMilliseconds(1),
-            setMinutes: (new Date(isoString)).setMinutes(1),
-            setMonth: (new Date(isoString)).setMonth(1),
-            setSeconds: (new Date(isoString)).setSeconds(59),
-            setTime: (new Date(isoString)).setTime(10),
-            setUTCDate: (new Date(isoString)).setUTCDate(24),
-            setUTCFullYear: (new Date(isoString)).setUTCFullYear(2010),
-            setUTCHours: (new Date(isoString)).setUTCHours(23),
-            setUTCMilliseconds: (new Date(isoString)).setUTCMilliseconds(1),
-            setUTCMinutes: (new Date(isoString)).setUTCMinutes(1),
-            setUTCMonth: (new Date(isoString)).setUTCMonth(1),
-            setUTCSeconds: (new Date(isoString)).setUTCSeconds(59),
+            setDate: new Date(isoString).setDate(24),
+            setFullYear: new Date(isoString).setFullYear(2010),
+            setHours: new Date(isoString).setHours(23),
+            setMilliseconds: new Date(isoString).setMilliseconds(1),
+            setMinutes: new Date(isoString).setMinutes(1),
+            setMonth: new Date(isoString).setMonth(1),
+            setSeconds: new Date(isoString).setSeconds(59),
+            setTime: new Date(isoString).setTime(10),
+            setUTCDate: new Date(isoString).setUTCDate(24),
+            setUTCFullYear: new Date(isoString).setUTCFullYear(2010),
+            setUTCHours: new Date(isoString).setUTCHours(23),
+            setUTCMilliseconds: new Date(isoString).setUTCMilliseconds(1),
+            setUTCMinutes: new Date(isoString).setUTCMinutes(1),
+            setUTCMonth: new Date(isoString).setUTCMonth(1),
+            setUTCSeconds: new Date(isoString).setUTCSeconds(59),
             setYear: (new Date(isoString) as any).setYear(96), // setYear is deprecated
-            toISOString: (new Date(isoString)).toISOString(),
+            toISOString: new Date(isoString).toISOString(),
           });
         });
 
@@ -482,11 +481,11 @@ it('should prevent attempting to break the sandbox', function() {
 });
 
 it('should correctly parse NumberLong and Int64 bigger than Number.MAX_SAFE_INTEGER', function() {
-  expect(
-    parse("{ n: NumberLong('345678654321234552') }"
-  ).n.toString()).toEqual('345678654321234552');
+  expect(parse("{ n: NumberLong('345678654321234552') }").n.toString()).toEqual(
+    '345678654321234552'
+  );
 
-  expect(
-    parse("{ n: Int64('345678654321234552') }"
-  ).n.toString()).toEqual('345678654321234552');
+  expect(parse("{ n: Int64('345678654321234552') }").n.toString()).toEqual(
+    '345678654321234552'
+  );
 });
