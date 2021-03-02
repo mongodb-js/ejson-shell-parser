@@ -20,7 +20,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
-    "acorn": "^7.4.0"
+    "acorn": "^8.0.5"
   },
   "peerDependencies": {
     "bson": "^4.2.3"
