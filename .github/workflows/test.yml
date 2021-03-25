@@ -20,7 +20,7 @@ jobs:
       - run: yarn test
       # Want to run this afterwards to prevent attempting to merge if tests fail
       - name: 'Automerge Dependabot PRs'
-        uses: ahmadnassri/action-dependabot-auto-merge@v2
         if: ${{ github.event_name == 'pull_request' }}
+        uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           github-token: ${{ secrets.dependabotToken }}
