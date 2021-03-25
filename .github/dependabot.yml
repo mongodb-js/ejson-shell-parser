@@ -16,5 +16,9 @@ updates:
     ignore:
       # Ignore any upgrades to BSON as this requires a new release
       - dependency-name: 'bson'
+      # Only imported for that performance comparison
+      - dependency-name: 'mongodb-query-parser'
+      # Typescript should be a conservative upgrade
+      - dependency-name: 'typescript'
     labels:
       - 'dependency'
