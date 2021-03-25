@@ -18,7 +18,9 @@ jobs:
       - run: yarn install --frozen-lockfile # will run `yarn install` command
       - run: yarn sanity # will check if building works & if code is formatted well
       - run: yarn test
+      # Want to run this afterwards to prevent attempting to merge if tests fail
       - name: 'Automerge Dependabot PRs'
         uses: ahmadnassri/action-dependabot-auto-merge@v2
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           github-token: ${{ secrets.dependabotToken }}
