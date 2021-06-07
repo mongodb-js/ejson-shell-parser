@@ -34,7 +34,7 @@
     "@preconstruct/cli": "^2.1.0",
     "@types/bson": "^4.0.3",
     "@types/estree": "^0.0.41",
-    "@types/jest": "^26.0.21",
+    "@types/jest": "^26.0.23",
     "benchmark": "^2.1.4",
     "bson": "^4.2.3",
     "husky": ">=5",
