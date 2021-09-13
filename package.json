@@ -42,7 +42,7 @@
     "lint-staged": ">=11",
     "mongodb-query-parser": "2.1.1",
     "np": "^7.4.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.4.0",
     "ts-jest": "^26.5.4",
     "typescript": "^3.9.9"
   },
