@@ -64,10 +64,14 @@ const SCOPE: { [x: string]: Function } = {
     return new (bson as any).BSONSymbol(i);
   },
   Timestamp: function(low: any, high: any) {
-    // https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps
-    // low == i
-    // high == t
-    return new bson.Timestamp(high, low);
+    if (typeof low === 'number' && typeof high === 'number') {
+      // https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps
+      // low == i
+      // high == t
+      return new bson.Timestamp(high, low);
+    }
+
+    return new bson.Timestamp(low, high);
   },
   ISODate: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know

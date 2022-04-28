@@ -49,6 +49,8 @@ it('should accept a complex query', function() {
     ObjectId: ObjectId("5e159ba7eac34211f2252aaa"),
     Symbol: Symbol('symbol'),
     Timestamp: Timestamp(123, 456),
+    Timestamp_object: Timestamp({ t: 1, i: 2 }),
+    Timestamp_long: Timestamp(new Long(1, 2)),
     ISODate: ISODate("2020-01-01 12:00:00"),
     Date: Date("2020-01-01 12:00:00")
   }`)
@@ -81,6 +83,8 @@ it('should accept a complex query', function() {
     ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     Symbol: new (bson as any).BSONSymbol('symbol'),
     Timestamp: new bson.Timestamp(456, 123),
+    Timestamp_object: new bson.Timestamp({ t: 1, i: 2 }),
+    Timestamp_long: new bson.Timestamp(bson.Long.fromNumber(8589934593)),
     ISODate: new Date('2020-01-01 12:00:00'),
     Date: new Date('2020-01-01 12:00:00'),
   });
