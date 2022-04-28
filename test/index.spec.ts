@@ -80,7 +80,7 @@ it('should accept a complex query', function() {
     ObjectID: new bson.ObjectID('5e159ba7eac34211f2252aaa'),
     ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     Symbol: new (bson as any).BSONSymbol('symbol'),
-    Timestamp: new bson.Timestamp(123, 456),
+    Timestamp: new bson.Timestamp(456, 123),
     ISODate: new Date('2020-01-01 12:00:00'),
     Date: new Date('2020-01-01 12:00:00'),
   });
@@ -95,7 +95,7 @@ it('should support binary operators (like plus / minus)', function() {
   }`)
   ).toEqual({
     _id: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
-    created: new bson.Timestamp(20, 10),
+    created: new bson.Timestamp(10, 20),
     filter: { year: { $gte: 2020 } },
   });
 });
