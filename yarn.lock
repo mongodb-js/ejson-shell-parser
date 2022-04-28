@@ -1534,7 +1534,7 @@ acorn-walk@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.2.0.tgz#0de889a601203909b0fbe07b8938dc21d2e967bc"
   integrity sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==
 
-acorn@^7.1.1, acorn@^7.4.0:
+acorn@^7.1.0, acorn@^7.1.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
@@ -1933,7 +1933,7 @@ bson@^1.0.1:
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.1.6.tgz#fb819be9a60cd677e0853aee4ca712a785d6618a"
   integrity sha512-EvVNVeGo4tHxwi8L6bPj3y3itEvStdwvvlojVxxbyYfoaxJ6keLgrTuKdyfEAszFK+H3olzBuafE0yoh0D1gdg==
 
-bson@^4.6.1, bson@^4.6.3:
+bson@^4.0.3, bson@^4.6.3:
   version "4.6.3"
   resolved "https://registry.yarnpkg.com/bson/-/bson-4.6.3.tgz#d1a9a0b84b9e84b62390811fc5580f6a8b1d858c"
   integrity sha512-rAqP5hcUVJhXP2MCSNVsf0oM2OGU1So6A9pVRDYayvJ5+hygXHQApf87wd5NlhPM1J9RJnbqxIG/f8QTzRoQ4A==
@@ -2567,12 +2567,12 @@ eastasianwidth@^0.2.0:
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
-ejson-shell-parser@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ejson-shell-parser/-/ejson-shell-parser-1.1.1.tgz#d4fa04a4042bd1f8aeb4a291bfb1fe9ce271a115"
-  integrity sha512-I+1FreeR4SmuU8aYtQEyQDQIBLu0xGIWEfwoKp7mX891i6QEjxQz/lLFw1eho3IPYBjfmbTES0Jogi2GE+D1rA==
+ejson-shell-parser@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/ejson-shell-parser/-/ejson-shell-parser-0.0.2.tgz#5e13d030bb01ef60d42a7796a6ecbf7fa00edc07"
+  integrity sha512-86NVl8AP2sDF43LHkPQCUCbER02Dyg3TqTAJ8OHk4lmSdKxD+wG1XRCatfKnLEU+HhFxSACLmHPNeqdRzaDtlw==
   dependencies:
-    acorn "^7.4.0"
+    acorn "^7.1.0"
 
 electron-to-chromium@^1.4.118:
   version "1.4.124"
@@ -4746,20 +4746,21 @@ mongodb-language-model@^1.6.1:
   resolved "https://registry.yarnpkg.com/mongodb-language-model/-/mongodb-language-model-1.7.1.tgz#885eda5e2d5a3b63c656cea197a129dcc5a8b053"
   integrity sha512-qkYggIFWxpC2PiG+lKRjdZ069Q+g0YQ8wYFJRnEesudFA1+0TNFqtrBpshBsvmaT41fwdhS4/1/4ey8Bj4qf7g==
 
-mongodb-query-parser@2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/mongodb-query-parser/-/mongodb-query-parser-2.4.4.tgz#178b85eca8391260cd311af9b5f34f02a3a03d14"
-  integrity sha512-uceyN+HkikyQA1X4fTW2cNW10iLbfWwOBD0uA8GnQgFGwlxgi8EkyYh05ryBo2qdi/8iCe7QYjJh3uJj+Dz1wg==
+mongodb-query-parser@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/mongodb-query-parser/-/mongodb-query-parser-2.1.1.tgz#636e1538099a9e05d3ba428b33551eb913bfeeb6"
+  integrity sha512-stPZItpFDzQIYIPIh2aX1Aj+HLJcROtPAAJoOX3K7GgnQxV9cApFIB4dt1/NyuYtqIO4uwbazu68+nkV/+G1GA==
   dependencies:
-    bson "^4.6.1"
+    bson "^4.0.3"
     debug "^4.1.1"
-    ejson-shell-parser "^1.1.1"
+    ejson-shell-parser "0.0.2"
     is-json "^2.0.1"
     javascript-stringify "^2.0.1"
     lodash "^4.17.15"
     lru-cache "^5.1.1"
     mongodb-extended-json "^1.10.2"
     mongodb-language-model "^1.6.1"
+    ms "^2.1.2"
 
 ms@2.0.0:
   version "2.0.0"
