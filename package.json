@@ -32,7 +32,7 @@
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.15.6",
     "@preconstruct/cli": "^2.1.0",
-    "@types/estree": "^0.0.41",
+    "@types/estree": "^0.0.51",
     "@types/jest": "^26.0.21",
     "benchmark": "^2.1.4",
     "bson": "^4.6.3",
