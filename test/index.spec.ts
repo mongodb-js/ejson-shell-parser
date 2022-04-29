@@ -48,7 +48,9 @@ it('should accept a complex query', function() {
     ObjectID: ObjectID("5e159ba7eac34211f2252aaa"),
     ObjectId: ObjectId("5e159ba7eac34211f2252aaa"),
     Symbol: Symbol('symbol'),
-    Timestamp: Timestamp(123, 456),
+    Timestamp: Timestamp(100, 0),
+    Timestamp_object: Timestamp({ t: 1, i: 2 }),
+    Timestamp_long: Timestamp(new Long(1, 2)),
     ISODate: ISODate("2020-01-01 12:00:00"),
     Date: Date("2020-01-01 12:00:00")
   }`)
@@ -80,7 +82,9 @@ it('should accept a complex query', function() {
     ObjectID: new bson.ObjectID('5e159ba7eac34211f2252aaa'),
     ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     Symbol: new (bson as any).BSONSymbol('symbol'),
-    Timestamp: new bson.Timestamp(123, 456),
+    Timestamp: new bson.Timestamp({ t: 100, i: 0 }),
+    Timestamp_object: new bson.Timestamp({ t: 1, i: 2 }),
+    Timestamp_long: new bson.Timestamp(bson.Long.fromNumber(8589934593)),
     ISODate: new Date('2020-01-01 12:00:00'),
     Date: new Date('2020-01-01 12:00:00'),
   });
@@ -95,7 +99,7 @@ it('should support binary operators (like plus / minus)', function() {
   }`)
   ).toEqual({
     _id: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
-    created: new bson.Timestamp(20, 10),
+    created: new bson.Timestamp(10, 20),
     filter: { year: { $gte: 2020 } },
   });
 });

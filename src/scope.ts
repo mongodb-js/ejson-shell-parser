@@ -64,6 +64,12 @@ const SCOPE: { [x: string]: Function } = {
     return new (bson as any).BSONSymbol(i);
   },
   Timestamp: function(low: any, high: any) {
+    if (typeof low === 'number' && typeof high === 'number') {
+      // https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps
+      // reverse the order to match the legacy shell
+      return new bson.Timestamp({ t: low, i: high });
+    }
+
     return new bson.Timestamp(low, high);
   },
   ISODate: function(...args: any[]) {
