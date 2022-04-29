@@ -66,9 +66,8 @@ const SCOPE: { [x: string]: Function } = {
   Timestamp: function(low: any, high: any) {
     if (typeof low === 'number' && typeof high === 'number') {
       // https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps
-      // low == i
-      // high == t
-      return new bson.Timestamp(high, low);
+      // reverse the order to match the legacy shell
+      return new bson.Timestamp({ t: low, i: high });
     }
 
     return new bson.Timestamp(low, high);
