@@ -4,7 +4,7 @@
   "main": "dist/ejson-shell-parser.cjs.js",
   "module": "dist/ejson-shell-parser.esm.js",
   "umd:main": "dist/ejson-shell-parser.umd.min.js",
-  "types": "dist/ejson-shell-parser.d.ts",
+  "types": "dist/declarations/src/index.d.ts",
   "author": "Scott Sidwell <scott.sidwell@mongodb.com>",
   "license": "MIT",
   "files": [
