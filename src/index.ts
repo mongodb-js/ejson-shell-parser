@@ -3,7 +3,7 @@ import { Node } from 'estree';
 
 import { checkTree } from './check';
 import { executeAST } from './eval';
-import { Options, buildOptions } from './options';
+import { Options, buildOptions, ParseMode } from './options';
 
 function buildAST(input: string): { ast: Node; hasComments: boolean } {
   let hasComments = false;
@@ -21,6 +21,8 @@ function buildAST(input: string): { ast: Node; hasComments: boolean } {
     hasComments,
   };
 }
+
+export { ParseMode };
 
 export default function parse(input: string, options?: Partial<Options>) {
   const parsedOptions = buildOptions(options);
