@@ -493,3 +493,9 @@ it('should correctly parse NumberLong and Int64 bigger than Number.MAX_SAFE_INTE
     '345678654321234552'
   );
 });
+
+it('should correctly parse when leading and trailing comments are present', function() {
+  const opts = { mode: ParseMode.Loose };
+  expect(parse('// foo\n{ x: 1 }', opts)).toEqual({ x: 1 });
+  expect(parse('{ x: 1 }\n// bar', opts)).toEqual({ x: 1 });
+});
