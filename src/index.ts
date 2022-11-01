@@ -27,7 +27,11 @@ export { ParseMode };
 export default function parse(input: string, options?: Partial<Options>) {
   const parsedOptions = buildOptions(options);
 
-  const { hasComments, ast } = buildAST(`(${input})`);
+  const { hasComments, ast } = buildAST(
+    // Wrapping input into brackets with newlines so that parser can correctly
+    // process an expression and handle possible trailing comments
+    `(\n${input}\n)`
+  );
 
   const passedCommentsCheck = !hasComments || parsedOptions.allowComments;
 
