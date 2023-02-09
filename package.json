@@ -23,7 +23,7 @@
     "acorn": "^8.1.0"
   },
   "peerDependencies": {
-    "bson": "^4.2.3"
+    "bson": "^4.2.3 || ^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",

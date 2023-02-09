@@ -10,11 +10,15 @@ jobs:
   build:
     name: Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        bson: [4.x, 5.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3.1.0
         with:
-          node-version: '12.x'
+          node-version: '14.x'
       - run: yarn install --frozen-lockfile # will run `yarn install` command
+      - run: yarn add bson@${{ matrix.bson }}
       - run: yarn sanity # will check if building works & if code is formatted well
       - run: yarn test

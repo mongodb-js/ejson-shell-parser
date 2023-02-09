@@ -76,10 +76,10 @@ it('should accept a complex query', function() {
     Long: new bson.Long(234, 200),
     NumberLong: bson.Long.fromNumber(123456789),
     Int64: bson.Long.fromNumber(120),
-    Map: new (bson as any).Map([['key', 'value']]),
+    Map: new Map([['key', 'value']]),
     MaxKey: new bson.MaxKey(),
     MinKey: new bson.MinKey(),
-    ObjectID: new bson.ObjectID('5e159ba7eac34211f2252aaa'),
+    ObjectID: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     ObjectId: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
     Symbol: new (bson as any).BSONSymbol('symbol'),
     Timestamp: new bson.Timestamp({ t: 100, i: 0 }),
@@ -99,7 +99,7 @@ it('should support binary operators (like plus / minus)', function() {
   }`)
   ).toEqual({
     _id: new bson.ObjectId('5e159ba7eac34211f2252aaa'),
-    created: new bson.Timestamp(10, 20),
+    created: new bson.Timestamp({ i: 10, t: 20 }),
     filter: { year: { $gte: 2020 } },
   });
 });

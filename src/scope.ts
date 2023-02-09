@@ -46,7 +46,7 @@ const SCOPE: { [x: string]: Function } = {
   NumberLong: NumberLong,
   Int64: NumberLong,
   Map: function(arr: any) {
-    return new (bson as any).Map(arr);
+    return new ((bson as any).Map ?? Map)(arr);
   },
   MaxKey: function() {
     return new bson.MaxKey();
@@ -55,22 +55,25 @@ const SCOPE: { [x: string]: Function } = {
     return new bson.MinKey();
   },
   ObjectID: function(i: any) {
-    return new bson.ObjectID(i);
+    return new bson.ObjectId(i);
   },
   ObjectId: function(i: any) {
-    return new bson.ObjectID(i);
+    return new bson.ObjectId(i);
   },
   Symbol: function(i: any) {
     return new (bson as any).BSONSymbol(i);
   },
   Timestamp: function(low: any, high: any) {
-    if (typeof low === 'number' && typeof high === 'number') {
+    if (
+      (typeof low === 'number' && typeof high === 'number') ||
+      high !== undefined
+    ) {
       // https://www.mongodb.com/docs/manual/reference/bson-types/#timestamps
       // reverse the order to match the legacy shell
       return new bson.Timestamp({ t: low, i: high });
     }
 
-    return new bson.Timestamp(low, high);
+    return new bson.Timestamp(low);
   },
   ISODate: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
