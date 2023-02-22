@@ -20,7 +20,7 @@ const SCOPE: { [x: string]: Function } = {
     if (u === undefined) {
       return new bson.UUID().toBinary();
     }
-    return new bson.Binary(Buffer.from(u.replace(/-/g, ''), 'hex'), 4);
+    return new bson.Binary(Buffer.from(u.replace(/-/g, ''), 'hex'), bson.Binary.SUBTYPE_UUID);
   },
   Code: function(c: any, s: any) {
     return new bson.Code(c, s);
