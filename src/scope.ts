@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import * as bson from 'bson';
 
 function NumberLong(v: any) {
@@ -18,7 +17,10 @@ const SCOPE: { [x: string]: Function } = {
     return new bson.Binary(Buffer.from(d, 'base64'), t);
   },
   UUID: function(u: any) {
-    return new bson.Binary(Buffer.from((u || randomUUID()).replace(/-/g, ''), 'hex'), 4);
+    if (u === undefined) {
+      return new bson.UUID().toBinary();
+    }
+    return new bson.Binary(Buffer.from(u.replace(/-/g, ''), 'hex'), 4);
   },
   Code: function(c: any, s: any) {
     return new bson.Code(c, s);
