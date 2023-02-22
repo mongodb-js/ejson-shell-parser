@@ -17,6 +17,9 @@ const SCOPE: { [x: string]: Function } = {
     return new bson.Binary(Buffer.from(d, 'base64'), t);
   },
   UUID: function(u: any) {
+    if (u === undefined) {
+      return new bson.UUID().toBinary();
+    }
     return new bson.Binary(Buffer.from(u.replace(/-/g, ''), 'hex'), 4);
   },
   Code: function(c: any, s: any) {
