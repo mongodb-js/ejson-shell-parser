@@ -76,11 +76,11 @@ const binaryExpression = (node: BinaryExpression): any => {
   }
 };
 
-const memberExpression = (node: CallExpression): any => {
+const memberExpression = (node: CallExpression, withNew: boolean): any => {
   switch (node.callee.type) {
     case 'Identifier': {
       // Handing <Constructor>() and new <Constructor>() cases
-      const callee = getScopeFunction(node.callee.name);
+      const callee = getScopeFunction(node.callee.name, withNew);
       const args = node.arguments.map(arg => walk(arg));
       return callee.apply(callee, args);
     }
@@ -129,8 +129,9 @@ const walk = (node: Node): any => {
     case 'ArrayExpression':
       return node.elements.map(node => walk(node));
     case 'CallExpression':
+      return memberExpression(node, false);
     case 'NewExpression':
-      return memberExpression(node);
+      return memberExpression(node, true);
     case 'ObjectExpression':
       const obj: { [key: string]: any } = {};
       node.properties.forEach(property => {
