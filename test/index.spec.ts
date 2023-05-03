@@ -52,7 +52,7 @@ it('should accept a complex query', function() {
     Timestamp_object: Timestamp({ t: 1, i: 2 }),
     Timestamp_long: Timestamp(new Long(1, 2)),
     ISODate: ISODate("2020-01-01 12:00:00"),
-    Date: Date("2020-01-01 12:00:00")
+    Date: new Date("2020-01-01 12:00:00")
   }`)
   ).toEqual({
     RegExp: /test/gi,
@@ -337,7 +337,7 @@ describe('Function calls', function() {
       dateSpy.mockRestore();
     });
 
-    describe.each(['new Date', 'new ISODate', 'Date', 'ISODate'])(
+    describe.each(['new Date', 'new ISODate', 'ISODate'])(
       'Date allow using member methods with "%s"',
       dateFn => {
         it('should allow member expressions', function() {
@@ -427,6 +427,17 @@ describe('Function calls', function() {
         });
       }
     );
+
+    it('should return a string if you use Date() without new', function() {
+      const isoString = '1996-02-24T23:01:59.001Z';
+      const newDate = `Date('${isoString}')`;
+
+      const input = `${newDate}`;
+
+      expect(parse(input, options)).toEqual(
+        expect.stringContaining(new Date().getUTCFullYear() + '')
+      );
+    });
   });
 
   // Testing more realistic examples of using the Date object

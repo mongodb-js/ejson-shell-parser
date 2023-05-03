@@ -8,7 +8,25 @@ function NumberLong(v: any) {
   }
 }
 
-const SCOPE: { [x: string]: Function } = {
+const SCOPE_CALL: { [x: string]: Function } = {
+  Date: function(...args: any[]) {
+    // casting our arguments as an empty array because we don't know
+    // the length of our arguments, and should allow users to pass what
+    // they want as date arguments
+    return Date(...(args as []));
+  },
+};
+
+const SCOPE_NEW: { [x: string]: Function } = {
+  Date: function(...args: any[]) {
+    // casting our arguments as an empty array because we don't know
+    // the length of our arguments, and should allow users to pass what
+    // they want as date arguments
+    return new Date(...(args as []));
+  },
+};
+
+const SCOPE_ANY: { [x: string]: Function } = {
   RegExp: RegExp,
   Binary: function(buffer: any, subType: any) {
     return new bson.Binary(buffer, subType);
@@ -79,12 +97,6 @@ const SCOPE: { [x: string]: Function } = {
     return new bson.Timestamp(low);
   },
   ISODate: function(...args: any[]) {
-    // casting our arguments as an empty array because we don't know
-    // the length of our arguments, and should allow users to pass what
-    // they want as date arguments
-    return new Date(...(args as []));
-  },
-  Date: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
@@ -201,12 +213,21 @@ const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = {
   },
 };
 
-export const GLOBAL_FUNCTIONS = Object.freeze(Object.keys(SCOPE));
+export const GLOBAL_FUNCTIONS = Object.freeze([
+  ...Object.keys(SCOPE_ANY),
+  ...Object.keys(SCOPE_NEW),
+  ...Object.keys(SCOPE_CALL),
+]);
 
-export function getScopeFunction(key: string): Function {
-  if (SCOPE[key]) {
-    return SCOPE[key];
+export function getScopeFunction(key: string, withNew: boolean): Function {
+  if (withNew && SCOPE_NEW[key]) {
+    return SCOPE_NEW[key];
+  } else if (!withNew && SCOPE_CALL[key]) {
+    return SCOPE_CALL[key];
+  } else if (SCOPE_ANY[key]) {
+    return SCOPE_ANY[key];
   }
+
   throw new Error(
     `Attempted to access scope property '${key}' that doesn't exist`
   );
