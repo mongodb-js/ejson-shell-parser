@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        bson: [4.x, 5.x]
+        bson: [4.x, 5.x, 6.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3.1.0
