@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3.1.0
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - run: yarn install --frozen-lockfile # will run `yarn install` command
       - run: yarn add bson@${{ matrix.bson }}
       - run: yarn sanity # will check if building works & if code is formatted well

@@ -57,5 +57,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,less,html,md,yml}": "prettier --write"
+  },
+  "engines" : {
+    "node" : ">=16"
   }
 }
