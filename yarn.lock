@@ -2025,6 +2025,11 @@ bson@^4.0.3:
   dependencies:
     buffer "^5.6.0"
 
+bson@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-6.1.0.tgz#ea7c98b90540e1632173da6b1f70187827e6ae8c"
+  integrity sha512-yiQ3KxvpVoRpx1oD1uPz4Jit9tAVTJgjdmjDKtUErkOoL9VNoF8Dd58qtAOL5E40exx2jvAT9sqdRSK/r+SHlA==
+
 buffer-from@1.x, buffer-from@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
