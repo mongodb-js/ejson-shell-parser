@@ -29,7 +29,7 @@ it('should accept a complex query', function() {
   expect(
     parse(`{
     RegExp: /test/ig,
-    Binary: new Binary(''),
+    Binary: new Binary(),
     BinData: BinData(3, 'dGVzdAo='),
     UUID: UUID('3d37923d-ab8e-4931-9e46-93df5fd3599e'),
     Code: Code('function() {}'),
@@ -56,7 +56,7 @@ it('should accept a complex query', function() {
   }`)
   ).toEqual({
     RegExp: /test/gi,
-    Binary: new bson.Binary('' as any),
+    Binary: new bson.Binary(),
     BinData: new bson.Binary(Buffer.from('dGVzdAo=', 'base64'), 3),
     UUID: new bson.Binary(
       Buffer.from('3d37923dab8e49319e4693df5fd3599e', 'hex'),
