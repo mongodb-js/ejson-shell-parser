@@ -234,7 +234,7 @@ export function getScopeFunction(key: string, withNew: boolean): Function {
 }
 
 export function isMethodWhitelisted(member: string, property: string): boolean {
-  if (ALLOWED_CLASS_EXPRESSIONS[member]) {
+  if (Object.prototype.hasOwnProperty.call(ALLOWED_CLASS_EXPRESSIONS, member)) {
     const allowedMethods = ALLOWED_CLASS_EXPRESSIONS[member].allowedMethods;
 
     if (typeof allowedMethods === 'string') {
@@ -248,7 +248,7 @@ export function isMethodWhitelisted(member: string, property: string): boolean {
 }
 
 export function getClass(member: string) {
-  if (ALLOWED_CLASS_EXPRESSIONS[member]) {
+  if (Object.prototype.hasOwnProperty.call(ALLOWED_CLASS_EXPRESSIONS, member)) {
     return ALLOWED_CLASS_EXPRESSIONS[member].class;
   }
   throw new Error(`Attempted to access member '${member}' that doesn't exist`);
