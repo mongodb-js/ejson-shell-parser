@@ -56,7 +56,7 @@ class Checker {
   checkSafeExpression = (node: Node): boolean => {
     switch (node.type) {
       case 'Identifier':
-        return GLOBALS.hasOwnProperty(node.name);
+        return Object.prototype.hasOwnProperty.call(GLOBALS, node.name);
       case 'Literal':
         return true;
       case 'ArrayExpression':

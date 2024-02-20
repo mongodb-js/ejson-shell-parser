@@ -1,5 +1,12 @@
 import * as bson from 'bson';
 
+// Returns the same object but frozen and with a null prototype.
+function lookupMap<T extends {}>(input: T): Readonly<T> {
+  return Object.freeze(
+    Object.create(null, Object.getOwnPropertyDescriptors(input))
+  );
+}
+
 function NumberLong(v: any) {
   if (typeof v === 'string') {
     return bson.Long.fromString(v);
@@ -8,25 +15,25 @@ function NumberLong(v: any) {
   }
 }
 
-const SCOPE_CALL: { [x: string]: Function } = {
+const SCOPE_CALL: { [x: string]: Function } = lookupMap({
   Date: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
     return Date(...(args as []));
   },
-};
+});
 
-const SCOPE_NEW: { [x: string]: Function } = {
+const SCOPE_NEW: { [x: string]: Function } = lookupMap({
   Date: function(...args: any[]) {
     // casting our arguments as an empty array because we don't know
     // the length of our arguments, and should allow users to pass what
     // they want as date arguments
     return new Date(...(args as []));
   },
-};
+});
 
-const SCOPE_ANY: { [x: string]: Function } = {
+const SCOPE_ANY: { [x: string]: Function } = lookupMap({
   RegExp: RegExp,
   Binary: function(buffer: any, subType: any) {
     return new bson.Binary(buffer, subType);
@@ -102,9 +109,9 @@ const SCOPE_ANY: { [x: string]: Function } = {
     // they want as date arguments
     return new Date(...(args as []));
   },
-};
+});
 
-export const GLOBALS: { [x: string]: any } = Object.freeze({
+export const GLOBALS: { [x: string]: any } = lookupMap({
   Infinity: Infinity,
   NaN: NaN,
   undefined: undefined,
@@ -125,10 +132,10 @@ type ClassExpressions = {
   };
 };
 
-const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = {
-  Math: {
+const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = lookupMap({
+  Math: lookupMap({
     class: Math,
-    allowedMethods: {
+    allowedMethods: lookupMap({
       abs: true,
       acos: true,
       acosh: true,
@@ -163,11 +170,11 @@ const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = {
       tan: true,
       tanh: true,
       trunc: true,
-    },
-  },
-  Date: {
+    }),
+  }),
+  Date: lookupMap({
     class: Date,
-    allowedMethods: {
+    allowedMethods: lookupMap({
       getDate: true,
       getDay: true,
       getFullYear: true,
@@ -205,13 +212,13 @@ const ALLOWED_CLASS_EXPRESSIONS: ClassExpressions = {
       setUTCSeconds: true,
       setYear: true,
       toISOString: true,
-    },
-  },
-  ISODate: {
+    }),
+  }),
+  ISODate: lookupMap({
     class: Date,
     allowedMethods: 'Date',
-  },
-};
+  }),
+});
 
 export const GLOBAL_FUNCTIONS = Object.freeze([
   ...Object.keys(SCOPE_ANY),
