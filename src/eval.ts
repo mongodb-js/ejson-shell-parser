@@ -116,7 +116,7 @@ const functionExpression = (
 const walk = (node: Node): any => {
   switch (node.type) {
     case 'Identifier':
-      if (GLOBALS.hasOwnProperty(node.name)) {
+      if (Object.prototype.hasOwnProperty.call(GLOBALS, node.name)) {
         return GLOBALS[node.name];
       }
       throw new Error(`${node.name} is not a valid Identifier`);
@@ -133,7 +133,7 @@ const walk = (node: Node): any => {
     case 'NewExpression':
       return memberExpression(node, true);
     case 'ObjectExpression':
-      const obj: { [key: string]: any } = {};
+      const obj: { [key: string]: any } = Object.create(null);
       node.properties.forEach(property => {
         const key =
           property.key.type === 'Identifier'
@@ -141,7 +141,7 @@ const walk = (node: Node): any => {
             : walk(property.key);
         obj[key] = walk(property.value);
       });
-      return obj;
+      return { ...obj };
     case 'FunctionExpression':
     case 'ArrowFunctionExpression':
       return functionExpression(node);
