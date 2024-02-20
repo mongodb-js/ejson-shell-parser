@@ -158,10 +158,14 @@ it('should not allow calling functions that do not exist', function() {
 
 for (const mode of [ParseMode.Extended, ParseMode.Strict, ParseMode.Loose]) {
   it('should not allow calling functions that only exist as Object.prototype properties', function() {
-    expect(parse('{ date: Date.constructor("") }', {mode})).toEqual('');
-    expect(parse('{ date: Date.hasOwnProperty("") }', {mode})).toEqual('');
-    expect(parse('{ date: Date.__proto__("") }', {mode})).toEqual('');
-    expect(parse('{ date: Code({ toString: Date.constructor("throw null;") }) }', {mode})).toEqual('');
+    expect(parse('{ date: Date.constructor("") }', { mode })).toEqual('');
+    expect(parse('{ date: Date.hasOwnProperty("") }', { mode })).toEqual('');
+    expect(parse('{ date: Date.__proto__("") }', { mode })).toEqual('');
+    expect(
+      parse('{ date: Code({ toString: Date.constructor("throw null;") }) }', {
+        mode,
+      })
+    ).toEqual('');
   });
 }
 

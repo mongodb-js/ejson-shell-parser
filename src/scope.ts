@@ -2,7 +2,9 @@ import * as bson from 'bson';
 
 // Returns the same object but frozen and with a null prototype.
 function lookupMap<T extends {}>(input: T): Readonly<T> {
-  return Object.freeze(Object.create(null, Object.getOwnPropertyDescriptors(input)));
+  return Object.freeze(
+    Object.create(null, Object.getOwnPropertyDescriptors(input))
+  );
 }
 
 function NumberLong(v: any) {
