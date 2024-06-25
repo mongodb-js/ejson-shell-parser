@@ -103,11 +103,24 @@ const SCOPE_ANY: { [x: string]: Function } = lookupMap({
 
     return new bson.Timestamp(low);
   },
-  ISODate: function(...args: any[]) {
-    // casting our arguments as an empty array because we don't know
-    // the length of our arguments, and should allow users to pass what
-    // they want as date arguments
-    return new Date(...(args as []));
+  ISODate: function(input?: string): Date {
+    if (!input) input = new Date().toISOString();
+    const isoDateRegex =
+      /^(?<Y>\d{4})-?(?<M>\d{2})-?(?<D>\d{2})([T ](?<h>\d{2})(:?(?<m>\d{2})(:?((?<s>\d{2})(\.(?<ms>\d+))?))?)?(?<tz>Z|([+-])(\d{2}):?(\d{2})?)?)?$/;
+    const match = input.match(isoDateRegex);
+    if (match !== null && match.groups !== undefined) {
+      // Normalize the representation because ISO-8601 accepts e.g.
+      // '20201002T102950Z' without : and -, but `new Date()` does not.
+      const { Y, M, D, h, m, s, ms, tz } = match.groups;
+      const normalized =
+        `${Y}-${M}-${D}T${h || '00'}:${m || '00'}:${s || '00'}.${ms || '000'}${tz || 'Z'}`;
+      const date = new Date(normalized);
+      // Make sur we're in the range 0000-01-01T00:00:00.000Z - 9999-12-31T23:59:59.999Z
+      if (date.getTime() >= -62167219200000 && date.getTime() <= 253402300799999) {
+        return date;
+      }
+    }
+    throw new Error(`${JSON.stringify(input)} is not a valid ISODate`);
   },
 });
 
