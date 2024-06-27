@@ -85,7 +85,7 @@ it('should accept a complex query', function() {
     Timestamp: new bson.Timestamp({ t: 100, i: 0 }),
     Timestamp_object: new bson.Timestamp({ t: 1, i: 2 }),
     Timestamp_long: new bson.Timestamp(bson.Long.fromNumber(8589934593)),
-    ISODate: new Date('2020-01-01 12:00:00'),
+    ISODate: new Date('2020-01-01T12:00:00.000Z'),
     Date: new Date('2020-01-01 12:00:00'),
   });
 });
